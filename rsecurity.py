@@ -221,7 +221,7 @@ def get_sina_stock_info(code: Union[str, List[str]]) -> List[
                 "url": "https://stock.finance.sina.com.cn/usstock/quotes/%s.html" % code.replace("$", ".")
             }
 
-        ## Raise.
+        ## Throw exception.
         else:
             throw(value=info)
 
