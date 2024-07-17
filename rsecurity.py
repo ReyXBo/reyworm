@@ -11,8 +11,8 @@
 
 from typing import Any, List, Tuple, Dict, Literal, Union
 from reytool.rcomm import request
+from reytool.rexception import throw
 from reytool.rregex import search, findall, sub
-from reytool.rsystem import throw
 from reytool.rtime import now
 
 
