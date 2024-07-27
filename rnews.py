@@ -46,25 +46,15 @@ def get_weibo_hot_search() -> List[Dict[Literal["rank", "time", "title", "type",
     # Convert.
     table = [
         {
-            "rank": info["rank"],
-            "time": (
-                time_to(to_time(info["onboard_time"]))
-                if "onboard_time" in info
-                else None
-            ),
             "title": info["word"],
-            "type": (
-                info["category"]
-                if "category" in info
-                else info["ad_type"]
-            ),
-            "hot": info.get("raw_hot"),
+            "hot": info["num"],
             "url": join_url(
                 "https://s.weibo.com/weibo",
                 {"q": "#%s#" % info["word"]}
             )
         }
         for info in table
+        if "flag" in info
     ]
     func_sort = lambda row: (
         0
@@ -72,6 +62,13 @@ def get_weibo_hot_search() -> List[Dict[Literal["rank", "time", "title", "type",
         else row["hot"]
     )
     table.sort(key=func_sort, reverse=True)
+    table = [
+        {
+            "rank": index,
+            **row
+        }
+        for index, row in enumerate(table)
+    ]
 
     return table
 
@@ -118,5 +115,12 @@ def get_toutiao_hot_search() -> List[Dict[Literal["title", "type", "label", "hot
     ]
     func_sort = lambda row: row["hot"]
     table.sort(key=func_sort, reverse=True)
+    table = [
+        {
+            "rank": index,
+            **row
+        }
+        for index, row in enumerate(table)
+    ]
 
     return table
