@@ -9,7 +9,7 @@
 """
 
 
-from typing import Any, List, Tuple, Dict, Literal, Union
+from typing import Any, List, Tuple, Dict, TypedDict, Literal, Union
 from reytool.rcomm import request
 from reytool.rexception import throw
 from reytool.rregex import search, findall, sub
@@ -19,6 +19,27 @@ from reytool.rtime import now
 __all__ = (
     "search_sina_market",
     "get_sina_stock_info"
+)
+
+
+SinaStockInfo = TypedDict(
+    "SinaStockInfo",
+    {
+        "code": str,
+        "name": str,
+        "price": float,
+        "open": float,
+        "pre_close": float,
+        "high": float,
+        "low": float,
+        "volume": int,
+        "amount": int,
+        "time": str,
+        "url": str,
+        "change": float,
+        "change_rate": float,
+        "swing": float
+    }
 )
 
 
@@ -78,7 +99,10 @@ def search_sina_market(keyword: str) -> List[Dict[Literal["code", "name", "type"
         for stock_url, stock_text in stocks_result:
             pattern = "<.+?>"
             stock_info = sub(pattern, stock_text)
-            stock_code, stock_name = stock_info.split(maxsplit=1)
+            stock_info_split = stock_info.split(maxsplit=1)
+            if len(stock_info_split) != 2:
+                continue
+            stock_code, stock_name = stock_info_split
             if stock_name.startswith("("):
                 stock_name = stock_name[1:-1]
             row = {
@@ -92,26 +116,7 @@ def search_sina_market(keyword: str) -> List[Dict[Literal["code", "name", "type"
     return table
 
 
-def get_sina_stock_info(code: Union[str, List[str]]) -> List[
-    Dict[
-        Literal[
-            "code",
-            "name",
-            "price",
-            "open",
-            "pre_close",
-            "high",
-            "low",
-            "volume",
-            "amount",
-            "time",
-            "change",
-            "change_rate",
-            "swing"
-        ],
-        Any
-    ]
-]:
+def get_sina_stock_info(code: Union[str, List[str]]) -> List[SinaStockInfo]:
     """
     Get stock information table from `sina` website.
 
