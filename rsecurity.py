@@ -72,9 +72,9 @@ def search_sina_market(keyword: str) -> List[Dict[Literal["code", "name", "type"
 
     # Unique result.
     if response.request.url.startswith("https://finance.sina.com.cn"):
-        pattern = "var papercode = '(.+?)'"
+        pattern = r"var papercode = '(.+?)'"
         stock_code = search(pattern, response.text)
-        pattern = "var stockname = '(.+?)'"
+        pattern = r"var stockname = '(.+?)'"
         stock_name = search(pattern, response.text)
         row = {
             "code": stock_code,
@@ -86,7 +86,7 @@ def search_sina_market(keyword: str) -> List[Dict[Literal["code", "name", "type"
         return table
 
     # Extract.
-    pattern = "<div class=\"(market|list)\"(.+?)</div>"
+    pattern = r"<div class=\"(market|list)\"(.+?)</div>"
     labels_result: Tuple[str, str] = findall(pattern, response.text)
     table = []
     for index, (label_class, div_text) in enumerate(labels_result):
@@ -94,10 +94,10 @@ def search_sina_market(keyword: str) -> List[Dict[Literal["code", "name", "type"
             continue
         stock_type_div_text = labels_result[index - 1][1]
         stock_type = stock_type_div_text.rsplit("<div>", 1)[1]
-        pattern = "<label><a href=\"([^\"]+)\" target=\"_blank\">(.+?)</label>"
+        pattern = r"<label><a href=\"([^\"]+)\" target=\"_blank\">(.+?)</label>"
         stocks_result = findall(pattern, div_text)
         for stock_url, stock_text in stocks_result:
-            pattern = "<.+?>"
+            pattern = r"<.+?>"
             stock_info = sub(pattern, stock_text)
             stock_info_split = stock_info.split(maxsplit=1)
             if len(stock_info_split) != 2:
@@ -156,7 +156,7 @@ def get_sina_stock_info(code: Union[str, List[str]]) -> List[SinaStockInfo]:
     )
 
     # Extract.
-    pattern = "([^_]+?)=\"([^\"]*)\""
+    pattern = r"([^_]+?)=\"([^\"]*)\""
     result: List[Tuple[str, str]] = findall(pattern, response.text)
     table = []
     for code, info in result:

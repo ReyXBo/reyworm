@@ -67,7 +67,7 @@ def get_calendar(
     response = request(url, params)
 
     # Extract.
-    pattern = "{.+}"
+    pattern = r"{.+}"
     text = search(pattern, response.text)
     data: Dict = json_loads(text)
     table: List[Dict] = data["Result"][0]["DisplayData"]["resultData"]["tplData"]["data"]["almanac"]
@@ -156,7 +156,7 @@ def get_lunar_calendar(
     response = request(url, params)
 
     # Extract.
-    pattern = "{.+}"
+    pattern = r"{.+}"
     text = search(pattern, response.text)
     data = json_loads(text)
     table = data["data"]
