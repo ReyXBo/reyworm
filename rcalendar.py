@@ -44,10 +44,8 @@ def get_calendar(
 
     # Get parameter.
     now_date = now("date")
-    if year is None:
-        year = now_date.year
-    if month is None:
-        month = now_date.month
+    year = year or now_date.year
+    month = month or now_date.month
     if month == 12:
         month = 1
     else:
@@ -145,10 +143,8 @@ def get_lunar_calendar(
 
     # Get parameter.
     now_date = now("date")
-    if year is None:
-        year = now_date.year
-    if month is None:
-        month = now_date.month
+    year = year or now_date.year
+    month = month or now_date.month
     url = "https://www.rili.com.cn/rili/json/pc_wnl/%s/%02d.js" % (year, month)
     params = {"_": now("timestamp")}
 
