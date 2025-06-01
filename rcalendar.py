@@ -110,12 +110,13 @@ def get_calendar(
     for row in table:
         week = row["week"]
         work = row["work"]
-        if work is None:
-            is_work_day = week not in (5, 6)
-        elif work == "1":
-            is_work_day = False
-        elif work == "2":
-            is_work_day = True
+        match work:
+            case None:
+                is_work_day = week not in (5, 6)
+            case "1":
+                is_work_day = False
+            case "2":
+                is_work_day = True
         row["work"] = is_work_day
 
     return table

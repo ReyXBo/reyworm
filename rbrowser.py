@@ -45,12 +45,13 @@ class RBrowser(object):
         """
 
         # Get parameter.
-        if driver == "edge":
-            driver_type = Edge
-            driver_option_type = EdgeOptions
-        elif driver == "chrome":
-            driver_type = Chrome
-            driver_option_type = ChromeOptions
+        match driver:
+            case "edge":
+                driver_type = Edge
+                driver_option_type = EdgeOptions
+            case "chrome":
+                driver_type = Chrome
+                driver_option_type = ChromeOptions
 
         # Option.
         options = driver_option_type()

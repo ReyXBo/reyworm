@@ -162,73 +162,74 @@ def get_sina_stock_info(code: Union[str, List[str]]) -> List[SinaStockInfo]:
     for code, info in result:
         info_list = info.split(",")
         info_list_len = len(info_list)
+        match info_list_len:
 
-        ## A.
-        if info_list_len == 34:
-            (
-                stock_name,
-                stock_open,
-                stock_pre_close,
-                stock_price,
-                stock_high,
-                stock_low,
-                _,
-                _,
-                stock_volume,
-                stock_amount,
-                *_,
-                stock_date,
-                stock_time,
-                _,
-                _
-            ) = info_list
-            row = {
-                "code": code,
-                "name": stock_name,
-                "price": float(stock_price),
-                "open": float(stock_open),
-                "pre_close": float(stock_pre_close),
-                "high": float(stock_high),
-                "low": float(stock_low),
-                "volume": int(float(stock_volume)),
-                "amount": int(float(stock_amount)),
-                "time": "%s %s" % (stock_date, stock_time),
-                "url": "https://finance.sina.com.cn/realstock/company/%s/nc.shtml" % code
-            }
+            ## A.
+            case 34:
+                (
+                    stock_name,
+                    stock_open,
+                    stock_pre_close,
+                    stock_price,
+                    stock_high,
+                    stock_low,
+                    _,
+                    _,
+                    stock_volume,
+                    stock_amount,
+                    *_,
+                    stock_date,
+                    stock_time,
+                    _,
+                    _
+                ) = info_list
+                row = {
+                    "code": code,
+                    "name": stock_name,
+                    "price": float(stock_price),
+                    "open": float(stock_open),
+                    "pre_close": float(stock_pre_close),
+                    "high": float(stock_high),
+                    "low": float(stock_low),
+                    "volume": int(float(stock_volume)),
+                    "amount": int(float(stock_amount)),
+                    "time": "%s %s" % (stock_date, stock_time),
+                    "url": "https://finance.sina.com.cn/realstock/company/%s/nc.shtml" % code
+                }
 
-        # US.
-        elif info_list_len in (36, 30):
-            (
-                stock_name,
-                stock_price,
-                _,
-                stock_date_time,
-                _,
-                stock_open,
-                stock_high,
-                stock_low,
-                _, _,
-                stock_amount,
-                _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,
-                stock_pre_close,
-                *_
-            ) = info_list
-            row = {
-                "code": code,
-                "name": stock_name,
-                "price": float(stock_price),
-                "open": float(stock_open),
-                "pre_close": float(stock_pre_close),
-                "high": float(stock_high),
-                "low": float(stock_low),
-                "amount": int(float(stock_amount)),
-                "time": stock_date_time,
-                "url": "https://stock.finance.sina.com.cn/usstock/quotes/%s.html" % code.replace("$", ".")
-            }
+            # US.
+            case 36 | 30:
+                (
+                    stock_name,
+                    stock_price,
+                    _,
+                    stock_date_time,
+                    _,
+                    stock_open,
+                    stock_high,
+                    stock_low,
+                    _, _,
+                    stock_amount,
+                    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,
+                    stock_pre_close,
+                    *_
+                ) = info_list
+                row = {
+                    "code": code,
+                    "name": stock_name,
+                    "price": float(stock_price),
+                    "open": float(stock_open),
+                    "pre_close": float(stock_pre_close),
+                    "high": float(stock_high),
+                    "low": float(stock_low),
+                    "amount": int(float(stock_amount)),
+                    "time": stock_date_time,
+                    "url": "https://stock.finance.sina.com.cn/usstock/quotes/%s.html" % code.replace("$", ".")
+                }
 
-        ## Throw exception.
-        else:
-            throw(value=info)
+            ## Throw exception.
+            case _:
+                throw(value=info)
 
         row["change"] = round(row["price"] - row["pre_close"], 4)
         row["change_rate"] = round(row["change"] / row["pre_close"] * 100, 4)
