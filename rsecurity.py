@@ -10,40 +10,40 @@
 
 
 from typing import Any, List, Tuple, Dict, TypedDict, Literal, Union
-from reytool.rcomm import request
-from reytool.rexception import throw
-from reytool.rregex import search, findall, sub
-from reytool.rtime import now
+from reykit.rcomm import request
+from reykit.rexception import throw
+from reykit.rregex import search, findall, sub
+from reykit.rtime import now
 
 
 __all__ = (
-    "search_sina_market",
-    "get_sina_stock_info"
+    'search_sina_market',
+    'get_sina_stock_info'
 )
 
 
 SinaStockInfo = TypedDict(
-    "SinaStockInfo",
+    'SinaStockInfo',
     {
-        "code": str,
-        "name": str,
-        "price": float,
-        "open": float,
-        "pre_close": float,
-        "high": float,
-        "low": float,
-        "volume": int,
-        "amount": int,
-        "time": str,
-        "url": str,
-        "change": float,
-        "change_rate": float,
-        "swing": float
+        'code': str,
+        'name': str,
+        'price': float,
+        'open': float,
+        'pre_close': float,
+        'high': float,
+        'low': float,
+        'volume': int,
+        'amount': int,
+        'time': str,
+        'url': str,
+        'change': float,
+        'change_rate': float,
+        'swing': float
     }
 )
 
 
-def search_sina_market(keyword: str) -> List[Dict[Literal["code", "name", "type", "url"], str]]:
+def search_sina_market(keyword: str) -> List[Dict[Literal['code', 'name', 'type', 'url'], str]]:
     """
     Search products from market from `sina` website.
 
@@ -57,10 +57,10 @@ def search_sina_market(keyword: str) -> List[Dict[Literal["code", "name", "type"
     """
 
     # Get parameter.
-    url = "https://biz.finance.sina.com.cn/suggest/lookup_n.php"
+    url = 'https://biz.finance.sina.com.cn/suggest/lookup_n.php'
     params = {
-        "country": "",
-        "q": keyword
+        'country': '',
+        'q': keyword
     }
 
     # Request.
@@ -72,44 +72,44 @@ def search_sina_market(keyword: str) -> List[Dict[Literal["code", "name", "type"
 
     # Unique result.
     if response.request.url.startswith("https://finance.sina.com.cn"):
-        pattern = r"var papercode = '(.+?)'"
+        pattern = "var papercode = '(.+?)'"
         stock_code = search(pattern, response.text)
-        pattern = r"var stockname = '(.+?)'"
+        pattern = "var stockname = '(.+?)'"
         stock_name = search(pattern, response.text)
         row = {
-            "code": stock_code,
-            "name": stock_name,
-            "type": "沪深股市(个股)",
-            "url": response.request.url
+            'code': stock_code,
+            'name': stock_name,
+            'type': '沪深股市(个股)',
+            'url': response.request.url
         }
         table = [row]
         return table
 
     # Extract.
-    pattern = r"<div class=\"(market|list)\"(.+?)</div>"
+    pattern = '<div class="(market|list)"(.+?)</div>'
     labels_result: Tuple[str, str] = findall(pattern, response.text)
     table = []
     for index, (label_class, div_text) in enumerate(labels_result):
-        if label_class != "list":
+        if label_class != 'list':
             continue
         stock_type_div_text = labels_result[index - 1][1]
-        stock_type = stock_type_div_text.rsplit("<div>", 1)[1]
-        pattern = r"<label><a href=\"([^\"]+)\" target=\"_blank\">(.+?)</label>"
+        stock_type = stock_type_div_text.rsplit('<div>', 1)[1]
+        pattern = '<label><a href="([^"]+)" target="_blank">(.+?)</label>'
         stocks_result = findall(pattern, div_text)
         for stock_url, stock_text in stocks_result:
-            pattern = r"<.+?>"
+            pattern = '<.+?>'
             stock_info = sub(pattern, stock_text)
             stock_info_split = stock_info.split(maxsplit=1)
             if len(stock_info_split) != 2:
                 continue
             stock_code, stock_name = stock_info_split
-            if stock_name.startswith("("):
+            if stock_name.startswith('('):
                 stock_name = stock_name[1:-1]
             row = {
-                "code": stock_code,
-                "name": stock_name,
-                "type": stock_type,
-                "url": stock_url
+                'code': stock_code,
+                'name': stock_name,
+                'type': stock_type,
+                'url': stock_url
             }
             table.append(row)
 
@@ -131,22 +131,22 @@ def get_sina_stock_info(code: Union[str, List[str]]) -> List[SinaStockInfo]:
 
     # Get parameter.
     if code.__class__ == str:
-        code = code.split(",")
+        code = code.split(',')
     code = [
         (
             i
-            if i[-1] in "0123456789"
-            else "gb_" + i.replace(".", "$")
+            if i[-1] in '0123456789'
+            else 'gb_' + i.replace('.', '$')
         )
         for i in code
     ]
-    code = ",".join(code)
+    code = ','.join(code)
     code = code.lower()
-    url = "https://hq.sinajs.cn/rn=%s&list=%s" % (
-        now("timestamp"),
+    url = 'https://hq.sinajs.cn/rn=%s&list=%s' % (
+        now('timestamp'),
         code
     )
-    headers = {"Referer": "https://finance.sina.com.cn"}
+    headers = {'Referer': 'https://finance.sina.com.cn'}
 
     # Request.
     response = request(
@@ -156,11 +156,11 @@ def get_sina_stock_info(code: Union[str, List[str]]) -> List[SinaStockInfo]:
     )
 
     # Extract.
-    pattern = r"([^_]+?)=\"([^\"]*)\""
+    pattern = '([^_]+?)="([^"]*)"'
     result: List[Tuple[str, str]] = findall(pattern, response.text)
     table = []
     for code, info in result:
-        info_list = info.split(",")
+        info_list = info.split(',')
         info_list_len = len(info_list)
         match info_list_len:
 
@@ -184,17 +184,17 @@ def get_sina_stock_info(code: Union[str, List[str]]) -> List[SinaStockInfo]:
                     _
                 ) = info_list
                 row = {
-                    "code": code,
-                    "name": stock_name,
-                    "price": float(stock_price),
-                    "open": float(stock_open),
-                    "pre_close": float(stock_pre_close),
-                    "high": float(stock_high),
-                    "low": float(stock_low),
-                    "volume": int(float(stock_volume)),
-                    "amount": int(float(stock_amount)),
-                    "time": "%s %s" % (stock_date, stock_time),
-                    "url": "https://finance.sina.com.cn/realstock/company/%s/nc.shtml" % code
+                    'code': code,
+                    'name': stock_name,
+                    'price': float(stock_price),
+                    'open': float(stock_open),
+                    'pre_close': float(stock_pre_close),
+                    'high': float(stock_high),
+                    'low': float(stock_low),
+                    'volume': int(float(stock_volume)),
+                    'amount': int(float(stock_amount)),
+                    'time': '%s %s' % (stock_date, stock_time),
+                    'url': 'https://finance.sina.com.cn/realstock/company/%s/nc.shtml' % code
                 }
 
             # US.
@@ -215,25 +215,25 @@ def get_sina_stock_info(code: Union[str, List[str]]) -> List[SinaStockInfo]:
                     *_
                 ) = info_list
                 row = {
-                    "code": code,
-                    "name": stock_name,
-                    "price": float(stock_price),
-                    "open": float(stock_open),
-                    "pre_close": float(stock_pre_close),
-                    "high": float(stock_high),
-                    "low": float(stock_low),
-                    "amount": int(float(stock_amount)),
-                    "time": stock_date_time,
-                    "url": "https://stock.finance.sina.com.cn/usstock/quotes/%s.html" % code.replace("$", ".")
+                    'code': code,
+                    'name': stock_name,
+                    'price': float(stock_price),
+                    'open': float(stock_open),
+                    'pre_close': float(stock_pre_close),
+                    'high': float(stock_high),
+                    'low': float(stock_low),
+                    'amount': int(float(stock_amount)),
+                    'time': stock_date_time,
+                    'url': 'https://stock.finance.sina.com.cn/usstock/quotes/%s.html' % code.replace('$', '.')
                 }
 
             ## Throw exception.
             case _:
                 throw(value=info)
 
-        row["change"] = round(row["price"] - row["pre_close"], 4)
-        row["change_rate"] = round(row["change"] / row["pre_close"] * 100, 4)
-        row["swing"] = round((row["high"] - row["low"]) / row["high"] * 100, 4)
+        row['change'] = round(row['price'] - row['pre_close'], 4)
+        row['change_rate'] = round(row['change'] / row['pre_close'] * 100, 4)
+        row['swing'] = round((row['high'] - row['low']) / row['high'] * 100, 4)
         table.append(row)
 
     return table

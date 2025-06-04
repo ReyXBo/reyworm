@@ -10,17 +10,17 @@
 
 
 from typing import Any, List, Dict, Literal
-from reytool.rcomm import request, join_url
-from reytool.rtime import to_time, time_to
+from reykit.rcomm import request, join_url
+from reykit.rtime import to_time, time_to
 
 
 __all__ = (
-    "get_weibo_hot_search",
-    "get_toutiao_hot_search"
+    'get_weibo_hot_search',
+    'get_toutiao_hot_search'
 )
 
 
-def get_weibo_hot_search() -> List[Dict[Literal["rank", "time", "title", "type", "hot", "url"], Any]]:
+def get_weibo_hot_search() -> List[Dict[Literal['rank', 'time', 'title', 'type', 'hot', 'url'], Any]]:
     """
     Get hot search table from `weibo` website.
 
@@ -36,35 +36,35 @@ def get_weibo_hot_search() -> List[Dict[Literal["rank", "time", "title", "type",
     """
 
     # Request.
-    url = "https://weibo.com/ajax/side/hotSearch"
+    url = 'https://weibo.com/ajax/side/hotSearch'
     response = request(url, check=True)
 
     # Extract.
     response_json = response.json()
-    table: List[Dict] = response_json["data"]["realtime"]
+    table: List[Dict] = response_json['data']['realtime']
 
     # Convert.
     table = [
         {
-            "title": info["word"],
-            "hot": info["num"],
-            "url": join_url(
-                "https://s.weibo.com/weibo",
-                {"q": "#%s#" % info["word"]}
+            'title': info['word'],
+            'hot': info['num'],
+            'url': join_url(
+                'https://s.weibo.com/weibo',
+                {'q': '#%s#' % info['word']}
             )
         }
         for info in table
-        if "flag" in info
+        if 'flag' in info
     ]
     func_sort = lambda row: (
         0
-        if row["hot"] is None
-        else row["hot"]
+        if row['hot'] is None
+        else row['hot']
     )
     table.sort(key=func_sort, reverse=True)
     table = [
         {
-            "rank": index,
+            'rank': index,
             **row
         }
         for index, row in enumerate(table)
@@ -73,7 +73,7 @@ def get_weibo_hot_search() -> List[Dict[Literal["rank", "time", "title", "type",
     return table
 
 
-def get_toutiao_hot_search() -> List[Dict[Literal["title", "type", "label", "hot", "url", "image"], Any]]:
+def get_toutiao_hot_search() -> List[Dict[Literal['title', 'type', 'label', 'hot', 'url', 'image'], Any]]:
     """
     Get hot search table from `toutiao` website.
 
@@ -89,8 +89,8 @@ def get_toutiao_hot_search() -> List[Dict[Literal["title", "type", "label", "hot
     """
 
     # Request.
-    url = "https://www.toutiao.com/hot-event/hot-board/"
-    params = {"origin": "toutiao_pc"}
+    url = 'https://www.toutiao.com/hot-event/hot-board/'
+    params = {'origin': 'toutiao_pc'}
     response = request(
         url,
         params,
@@ -99,25 +99,25 @@ def get_toutiao_hot_search() -> List[Dict[Literal["title", "type", "label", "hot
 
     # Extract.
     response_json = response.json()
-    table: List[Dict] = response_json["data"]
+    table: List[Dict] = response_json['data']
 
     # Convert.
     table = [
         {
-            "title": info["Title"],
-            "type": info.get("InterestCategory"),
-            "label": info.get("LabelDesc"),
-            "hot": int(info["HotValue"]),
-            "url": info["Url"],
-            "image": info["Image"]["url"],
+            'title': info['Title'],
+            'type': info.get('InterestCategory'),
+            'label': info.get('LabelDesc'),
+            'hot': int(info['HotValue']),
+            'url': info['Url'],
+            'image': info['Image']['url'],
         }
         for info in table
     ]
-    func_sort = lambda row: row["hot"]
+    func_sort = lambda row: row['hot']
     table.sort(key=func_sort, reverse=True)
     table = [
         {
-            "rank": index,
+            'rank': index,
             **row
         }
         for index, row in enumerate(table)

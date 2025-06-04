@@ -11,13 +11,13 @@
 
 from typing import Any, Dict, Literal, Optional
 from selenium.webdriver import Edge, Chrome, EdgeOptions, ChromeOptions
-from reytool.rcomm import join_url
-from reytool.rtime import sleep
+from reykit.rcomm import join_url
+from reykit.rtime import sleep
 
 
 __all__ = (
-    "RBrowser",
-    "get_page"
+    'RBrowser',
+    'get_page'
 )
 
 
@@ -29,7 +29,7 @@ class RBrowser(object):
 
     def __init__(
         self,
-        driver: Literal["edge", "chrome"] = "edge",
+        driver: Literal['edge', 'chrome'] = 'edge',
         headless: bool = False
     ) -> None:
         """
@@ -46,10 +46,10 @@ class RBrowser(object):
 
         # Get parameter.
         match driver:
-            case "edge":
+            case 'edge':
                 driver_type = Edge
                 driver_option_type = EdgeOptions
-            case "chrome":
+            case 'chrome':
                 driver_type = Chrome
                 driver_option_type = ChromeOptions
 
@@ -58,7 +58,7 @@ class RBrowser(object):
 
         ## Headless.
         if headless:
-            options.add_argument("--headless")
+            options.add_argument('--headless')
 
         # Driver.
         self.driver = driver_type(options)

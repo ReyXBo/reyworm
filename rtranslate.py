@@ -9,12 +9,12 @@
 """
 
 
-from reytool.rcomm import request
+from reykit.rcomm import request
 
 
 __all__ = (
-    "translate_baidu",
-    "translate"
+    'translate_baidu',
+    'translate'
 )
 
 
@@ -32,20 +32,20 @@ def translate_baidu(text: str) -> str:
     """
 
     # Set parameter.
-    url = "https://fanyi.baidu.com/sug"
+    url = 'https://fanyi.baidu.com/sug'
     data = {
-        "kw": text
+        'kw': text
     }
 
     # Requests.
     response = request(url, data)
-    response_data = response.json()["data"]
+    response_data = response.json()['data']
 
     # Handle result.
     if not len(response_data):
         return
-    translate_data = response_data[0]["v"]
-    translate_text = translate_data.split(";")[0].split(". ")[-1]
+    translate_data = response_data[0]['v']
+    translate_text = translate_data.split(';')[0].split('. ')[-1]
 
     return translate_text
 
