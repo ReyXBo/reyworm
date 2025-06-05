@@ -32,10 +32,9 @@ def get_calendar(
     Parameters
     ----------
     year : Given year.
-        - `None` : Now year.
-
+        - `None`: Now year.
     month : Given month.
-        - `None` : Now month.
+        - `None`: Now month.
 
     Returns
     -------
@@ -132,10 +131,9 @@ def get_lunar_calendar(
     Parameters
     ----------
     year : Given year.
-        - `None` : Now year.
-
+        - `None`: Now year.
     month : Given month.
-        - `None` : Now month.
+        - `None`: Now month.
 
     Returns
     -------

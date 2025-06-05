@@ -38,9 +38,8 @@ class RBrowser(object):
         Parameters
         ----------
         driver : Browser driver type.
-            - `Literal['edge']` : Edge browser.
-            - `Literal['chrome']` : Chrome browser.
-
+            - `Literal['edge']`: Edge browser.
+            - `Literal['chrome']`: Chrome browser.
         headless : Whether use headless mode.
         """
 

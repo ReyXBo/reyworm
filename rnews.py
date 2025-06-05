@@ -27,12 +27,12 @@ def get_weibo_hot_search() -> List[Dict[Literal['rank', 'time', 'title', 'type',
     Returns
     -------
     Hot search table.
-        - `Key 'rank'` : Hot search rank.
-        - `Key 'time'` : Hot search time.
-        - `Key 'title'` : Hot search title.
-        - `Key 'type'` : Hot search type.
-        - `Key 'hot'` : Hot search hot value.
-        - `Key 'url'` : Hot search URL.
+        - `Key 'rank'`: Hot search rank.
+        - `Key 'time'`: Hot search time.
+        - `Key 'title'`: Hot search title.
+        - `Key 'type'`: Hot search type.
+        - `Key 'hot'`: Hot search hot value.
+        - `Key 'url'`: Hot search URL.
     """
 
     # Request.
@@ -80,12 +80,12 @@ def get_toutiao_hot_search() -> List[Dict[Literal['title', 'type', 'label', 'hot
     Returns
     -------
     Hot search table.
-        - `Key 'title'` : Hot search title.
-        - `Key 'type'` : Hot search type list.
-        - `Key 'label'` : Hot search label.
-        - `Key 'hot'` : Hot search hot value.
-        - `Key 'url'` : Hot search URL.
-        - `Key 'image'` : Hot search image URL.
+        - `Key 'title'`: Hot search title.
+        - `Key 'type'`: Hot search type list.
+        - `Key 'label'`: Hot search label.
+        - `Key 'hot'`: Hot search hot value.
+        - `Key 'url'`: Hot search URL.
+        - `Key 'image'`: Hot search image URL.
     """
 
     # Request.
