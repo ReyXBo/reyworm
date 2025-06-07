@@ -9,7 +9,7 @@
 """
 
 
-from typing import Any, List, Dict, Literal
+from typing import Any, Literal
 from reykit.rcomm import request, join_url
 from reykit.rtime import to_time, time_to
 
@@ -20,7 +20,7 @@ __all__ = (
 )
 
 
-def get_weibo_hot_search() -> List[Dict[Literal['rank', 'time', 'title', 'type', 'hot', 'url'], Any]]:
+def get_weibo_hot_search() -> list[dict[Literal['rank', 'time', 'title', 'type', 'hot', 'url'], Any]]:
     """
     Get hot search table from `weibo` website.
 
@@ -41,7 +41,7 @@ def get_weibo_hot_search() -> List[Dict[Literal['rank', 'time', 'title', 'type',
 
     # Extract.
     response_json = response.json()
-    table: List[Dict] = response_json['data']['realtime']
+    table: list[dict] = response_json['data']['realtime']
 
     # Convert.
     table = [
@@ -73,7 +73,7 @@ def get_weibo_hot_search() -> List[Dict[Literal['rank', 'time', 'title', 'type',
     return table
 
 
-def get_toutiao_hot_search() -> List[Dict[Literal['title', 'type', 'label', 'hot', 'url', 'image'], Any]]:
+def get_toutiao_hot_search() -> list[dict[Literal['title', 'type', 'label', 'hot', 'url', 'image'], Any]]:
     """
     Get hot search table from `toutiao` website.
 
@@ -99,7 +99,7 @@ def get_toutiao_hot_search() -> List[Dict[Literal['title', 'type', 'label', 'hot
 
     # Extract.
     response_json = response.json()
-    table: List[Dict] = response_json['data']
+    table: list[dict] = response_json['data']
 
     # Convert.
     table = [

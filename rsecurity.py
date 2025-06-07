@@ -9,7 +9,7 @@
 """
 
 
-from typing import Any, List, Tuple, Dict, TypedDict, Literal, Union
+from typing import Any, TypedDict, Literal, Union
 from reykit.rcomm import request
 from reykit.rexception import throw
 from reykit.rregex import search, findall, sub
@@ -43,7 +43,7 @@ SinaStockInfo = TypedDict(
 )
 
 
-def search_sina_market(keyword: str) -> List[Dict[Literal['code', 'name', 'type', 'url'], str]]:
+def search_sina_market(keyword: str) -> list[dict[Literal['code', 'name', 'type', 'url'], str]]:
     """
     Search products from market from `sina` website.
 
@@ -87,7 +87,7 @@ def search_sina_market(keyword: str) -> List[Dict[Literal['code', 'name', 'type'
 
     # Extract.
     pattern = '<div class="(market|list)"(.+?)</div>'
-    labels_result: Tuple[str, str] = findall(pattern, response.text)
+    labels_result: tuple[str, str] = findall(pattern, response.text)
     table = []
     for index, (label_class, div_text) in enumerate(labels_result):
         if label_class != 'list':
@@ -116,7 +116,7 @@ def search_sina_market(keyword: str) -> List[Dict[Literal['code', 'name', 'type'
     return table
 
 
-def get_sina_stock_info(code: Union[str, List[str]]) -> List[SinaStockInfo]:
+def get_sina_stock_info(code: Union[str, list[str]]) -> list[SinaStockInfo]:
     """
     Get stock information table from `sina` website.
 
@@ -157,7 +157,7 @@ def get_sina_stock_info(code: Union[str, List[str]]) -> List[SinaStockInfo]:
 
     # Extract.
     pattern = '([^_]+?)="([^"]*)"'
-    result: List[Tuple[str, str]] = findall(pattern, response.text)
+    result: list[tuple[str, str]] = findall(pattern, response.text)
     table = []
     for code, info in result:
         info_list = info.split(',')

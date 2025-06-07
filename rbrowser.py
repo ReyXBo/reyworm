@@ -9,7 +9,7 @@
 """
 
 
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Literal, Optional
 from selenium.webdriver import Edge, Chrome, EdgeOptions, ChromeOptions
 from reykit.rcomm import join_url
 from reykit.rtime import sleep
@@ -66,7 +66,7 @@ class RBrowser(object):
     def request(
         self,
         url: str,
-        params: Optional[Dict[str, Any]] = None
+        params: Optional[dict[str, Any]] = None
     ) -> None:
         """
         Request URL.
@@ -107,7 +107,7 @@ class RBrowser(object):
 
 def get_page(
     url: str,
-    params: Optional[Dict[str, Any]] = None
+    params: Optional[dict[str, Any]] = None
 ) -> str:
     """
     Get page elements document.
