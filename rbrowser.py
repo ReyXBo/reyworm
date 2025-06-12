@@ -33,7 +33,7 @@ class RBrowser(object):
         headless: bool = False
     ) -> None:
         """
-        Build `browser` instance.
+        Build `browser` attributes.
 
         Parameters
         ----------
