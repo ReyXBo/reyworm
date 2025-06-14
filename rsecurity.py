@@ -9,7 +9,7 @@
 """
 
 
-from typing import Any, TypedDict, Literal, Union
+from typing import Any, TypedDict, Literal
 from reykit.rcomm import request
 from reykit.rexception import throw
 from reykit.rregex import search, findall, sub
@@ -116,7 +116,7 @@ def search_sina_market(keyword: str) -> list[dict[Literal['code', 'name', 'type'
     return table
 
 
-def get_sina_stock_info(code: Union[str, list[str]]) -> list[SinaStockInfo]:
+def get_sina_stock_info(code: str | list[str]) -> list[SinaStockInfo]:
     """
     Get stock information table from `sina` website.
 

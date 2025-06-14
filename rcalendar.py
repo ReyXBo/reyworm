@@ -9,7 +9,6 @@
 """
 
 
-from typing import Optional
 from json import loads as json_loads
 from reykit.rcomm import request
 from reykit.rregex import search
@@ -23,8 +22,8 @@ __all__ = (
 
 
 def get_calendar(
-    year: Optional[int] = None,
-    month: Optional[int] = None
+    year: int | None = None,
+    month: int | None = None
 ) -> list[dict]:
     """
     Get calendar table for three months from `baidu` website.
@@ -122,8 +121,8 @@ def get_calendar(
 
 
 def get_lunar_calendar(
-    year: Optional[int] = None,
-    month: Optional[int] = None
+    year: int | None = None,
+    month: int | None = None
 ) -> list[dict]:
     """
     Get lunar calendar table for one month from `rili` website.
