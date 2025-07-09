@@ -34,7 +34,7 @@ class RBrowser(RBase):
         headless: bool = False
     ) -> None:
         """
-        Build `browser` attributes.
+        Build `browser` instance attributes.
 
         Parameters
         ----------
