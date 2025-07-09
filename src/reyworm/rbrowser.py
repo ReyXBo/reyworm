@@ -13,6 +13,7 @@ from typing import Any, Literal
 from selenium.webdriver import Edge, Chrome, EdgeOptions, ChromeOptions
 from reykit.rcomm import join_url
 from reykit.rtime import sleep
+from reykit.rtype import RBase
 
 
 __all__ = (
@@ -21,7 +22,7 @@ __all__ = (
 )
 
 
-class RBrowser(object):
+class RBrowser(RBase):
     """
     Rey's `browser` type.
     """
