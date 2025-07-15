@@ -130,7 +130,7 @@ def get_sina_stock_info(code: str | list[str]) -> list[SinaStockInfo]:
     """
 
     # Get parameter.
-    if code.__class__ == str:
+    if type(code) == str:
         code = code.split(',')
     code = [
         (
