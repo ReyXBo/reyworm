@@ -9,7 +9,7 @@
 """
 
 
-from reykit.rcomm import request
+from reykit.rnet import request
 
 
 __all__ = (

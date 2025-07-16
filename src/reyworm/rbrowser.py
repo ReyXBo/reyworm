@@ -11,8 +11,7 @@
 
 from typing import Any, Literal
 from selenium.webdriver import Edge, Chrome, EdgeOptions, ChromeOptions
-from reykit.rcomm import join_url
-from reykit.rtime import sleep
+from reykit.rnet import join_url
 from reykit.rtype import RBase
 
 

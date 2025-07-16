@@ -10,8 +10,8 @@
 
 
 from json import loads as json_loads
-from reykit.rcomm import request
-from reykit.rregex import search
+from reykit.rnet import request
+from reykit.rre import search
 from reykit.rtime import now
 
 

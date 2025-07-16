@@ -9,10 +9,10 @@
 """
 
 
-from typing import Any, TypedDict, Literal
-from reykit.rcomm import request
-from reykit.rexception import throw
-from reykit.rregex import search, findall, sub
+from typing import TypedDict, Literal
+from reykit.rexc import throw
+from reykit.rnet import request
+from reykit.rre import search, findall, sub
 from reykit.rtime import now
 
 

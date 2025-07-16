@@ -11,7 +11,7 @@
 
 from typing import Any, Literal
 from fake_useragent import UserAgent
-from reykit.rcomm import request, join_url
+from reykit.rnet import request, join_url
 
 
 __all__ = (
