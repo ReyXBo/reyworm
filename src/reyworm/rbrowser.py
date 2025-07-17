@@ -12,18 +12,18 @@
 from typing import Any, Literal
 from selenium.webdriver import Edge, Chrome, EdgeOptions, ChromeOptions
 from reykit.rnet import join_url
-from reykit.rtype import RBase
+from reykit.rtype import Base
 
 
 __all__ = (
-    'RBrowser',
+    'Browser',
     'get_page'
 )
 
 
-class RBrowser(RBase):
+class Browser(Base):
     """
-    Rey's `browser` type.
+    Browser type.
     """
 
 
@@ -33,7 +33,7 @@ class RBrowser(RBase):
         headless: bool = False
     ) -> None:
         """
-        Build `browser` instance attributes.
+        Build instance attributes.
 
         Parameters
         ----------
@@ -123,7 +123,7 @@ def get_page(
     """
 
     # Get parameter.
-    browser = RBrowser(headless=True)
+    browser = Browser(headless=True)
 
     # Request.
     browser.request(url, params)
