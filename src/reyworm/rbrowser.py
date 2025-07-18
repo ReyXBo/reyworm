@@ -11,8 +11,8 @@
 
 from typing import Any, Literal
 from selenium.webdriver import Edge, Chrome, EdgeOptions, ChromeOptions
+from reykit.rbase import Base
 from reykit.rnet import join_url
-from reykit.rtype import Base
 
 
 __all__ = (

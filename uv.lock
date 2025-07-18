@@ -849,7 +849,7 @@ wheels = [
 
 [[package]]
 name = "reyworm"
-version = "1.0.4"
+version = "1.0.9"
 source = { editable = "." }
 dependencies = [
     { name = "fake-useragent" },

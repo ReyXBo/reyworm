@@ -10,7 +10,7 @@
 
 
 from typing import TypedDict, Literal
-from reykit.rexc import throw
+from reykit.rbase import throw
 from reykit.rnet import request
 from reykit.rre import search, findall, sub
 from reykit.rtime import now
