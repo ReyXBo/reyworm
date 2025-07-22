@@ -1,6 +1,6 @@
 [project]
 name = "reyworm"
-version = "1.0.11"
+version = "1.0.12"
 description = "Worm method set."
 readme = "README.md"
 requires-python = ">=3.12"
