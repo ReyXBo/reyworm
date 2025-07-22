@@ -229,7 +229,7 @@ def get_sina_stock_info(code: str | list[str]) -> list[SinaStockInfo]:
 
             ## Throw exception.
             case _:
-                throw(value=info)
+                throw(AssertionError, info)
 
         row['change'] = round(row['price'] - row['pre_close'], 4)
         row['change_rate'] = round(row['change'] / row['pre_close'] * 100, 4)
