@@ -40,7 +40,7 @@ def get_calendar(
     Calendar table.
     """
 
-    # Get parameter.
+    # Handle parameter.
     now_date = now('date')
     year = year or now_date.year
     month = month or now_date.month
@@ -139,7 +139,7 @@ def get_lunar_calendar(
     Lunar calendar table.
     """
 
-    # Get parameter.
+    # Handle parameter.
     now_date = now('date')
     year = year or now_date.year
     month = month or now_date.month

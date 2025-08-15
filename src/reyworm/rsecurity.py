@@ -56,7 +56,7 @@ def search_sina_market(keyword: str) -> list[dict[Literal['code', 'name', 'type'
     Search result table.
     """
 
-    # Get parameter.
+    # Handle parameter.
     url = 'https://biz.finance.sina.com.cn/suggest/lookup_n.php'
     params = {
         'country': '',
@@ -129,7 +129,7 @@ def get_sina_stock_info(code: str | list[str]) -> list[SinaStockInfo]:
     Stock information table.
     """
 
-    # Get parameter.
+    # Handle parameter.
     if type(code) == str:
         code = code.split(',')
     code = [

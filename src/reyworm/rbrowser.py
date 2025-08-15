@@ -43,7 +43,7 @@ class Browser(Base):
         headless : Whether use headless mode.
         """
 
-        # Get parameter.
+        # Handle parameter.
         match driver:
             case 'edge':
                 driver_type = Edge
@@ -77,9 +77,8 @@ class Browser(Base):
         params : URL parameters.
         """
 
-        # Get parameter.
-        if params is None:
-            params = {}
+        # Handle parameter.
+        params = params or {}
         url = join_url(url, params)
 
         # Request.
@@ -96,7 +95,7 @@ class Browser(Base):
         Page elements document.
         """
 
-        # Get parameter.
+        # Handle parameter.
         page_source = self.driver.page_source
 
         return page_source
@@ -122,7 +121,7 @@ def get_page(
     Page elements document.
     """
 
-    # Get parameter.
+    # Handle parameter.
     browser = Browser(headless=True)
 
     # Request.
