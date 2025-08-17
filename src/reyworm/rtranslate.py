@@ -13,12 +13,12 @@ from reykit.rnet import request
 
 
 __all__ = (
-    'translate_baidu',
-    'translate'
+    'trans_baidu',
+    'trans'
 )
 
 
-def translate_baidu(text: str) -> str:
+def trans_baidu(text: str) -> str:
     """
     Use `fanyi.baidu.com` translated text.
 
@@ -50,7 +50,7 @@ def translate_baidu(text: str) -> str:
     return translate_text
 
 
-def translate(text: str) -> str:
+def trans(text: str) -> str:
     """
     Translate text.
 
@@ -65,7 +65,7 @@ def translate(text: str) -> str:
 
     # Set parameter.
     translate_func = [
-        translate_baidu
+        trans_baidu
     ]
 
     # Translate.
