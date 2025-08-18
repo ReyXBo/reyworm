@@ -71,12 +71,12 @@ def get_weibo_hot_search() -> list[dict[Literal['rank', 'time', 'title', 'type',
         for info in table
         if 'flag' in info
     ]
-    func_sort = lambda row: (
+    sort_key = lambda row: (
         0
         if row['hot'] is None
         else row['hot']
     )
-    table.sort(key=func_sort, reverse=True)
+    table.sort(key=sort_key, reverse=True)
     table = [
         {
             'rank': index,
@@ -128,8 +128,8 @@ def get_toutiao_hot_search() -> list[dict[Literal['title', 'type', 'label', 'hot
         }
         for info in table
     ]
-    func_sort = lambda row: row['hot']
-    table.sort(key=func_sort, reverse=True)
+    sort_key = lambda row: row['hot']
+    table.sort(key=sort_key, reverse=True)
     table = [
         {
             'rank': index,
