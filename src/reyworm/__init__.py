@@ -10,9 +10,8 @@
 Modules
 -------
 rall : All methods.
-rbrowser : Browser methods.
-rcalendar : Calendar methods.
-rnews : News methods.
-rsecurity : Security methods.
-rtranslate : Translate methods.
+rbase : Base methods.
+rcommon : Common methods.
+rfinance : Finance methods.
+rmedia : Media methods.
 """
