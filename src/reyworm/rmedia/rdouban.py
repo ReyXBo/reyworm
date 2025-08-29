@@ -9,12 +9,12 @@
 """
 
 
-from typing import TypedDict, Literal, overload
+from typing import TypedDict
 from bs4 import BeautifulSoup
 from reydb.rdb import Database
 from reykit.rbase import throw
 from reykit.rnet import request
-from reykit.rre import search, findall
+from reykit.rre import search, findall, sub
 
 from ..rbase import WormCrawl
 
@@ -72,8 +72,7 @@ class WormDouban(WormCrawl):
     """
 
     base_url = 'https://www.douban.com/'
-    header_referer = 'https://movie.douban.com/tv/'
-    interval_s = 60
+    interval_s = None
 
 
     def __init__(self, database: Database | None = None) -> None:
@@ -109,19 +108,20 @@ class WormDouban(WormCrawl):
 
         # Handle parameter.
         url_format = 'https://m.douban.com/rexxar/api/v2/subject/recent_hot/%s'
+        referer_format = 'https://movie.douban.com/%s/'
         type_dict = {
-            'movie_cn': ('movie', '热门', '华语'),
-            'movie_eu_us': ('movie', '热门', '欧美'),
-            'movie_jp': ('movie', '热门', '日本'),
-            'movie_kr': ('movie', '热门', '韩国'),
-            'tv_cn': ('tv', 'tv', 'tv_domestic'),
-            'tv_eu_us': ('tv', 'tv', 'tv_american'),
-            'tv_jp': ('tv', 'tv', 'tv_japanese'),
-            'tv_kr': ('tv', 'tv', 'tv_korean'),
-            'tv_anim': ('tv', 'tv', 'tv_animation'),
-            'tv_doc': ('tv', 'tv', 'tv_documentary'),
-            'show_in': ('tv', 'show', 'show_domestic'),
-            'show_out': ('tv', 'show', 'show_foreign')
+            'movie_cn': ('movie', 'explore', '热门', '华语'),
+            'movie_eu_us': ('movie', 'explore', '热门', '欧美'),
+            'movie_jp': ('movie', 'explore', '热门', '日本'),
+            'movie_kr': ('movie', 'explore', '热门', '韩国'),
+            'tv_cn': ('tv', 'tv', 'tv', 'tv_domestic'),
+            'tv_eu_us': ('tv', 'tv', 'tv', 'tv_american'),
+            'tv_jp': ('tv', 'tv', 'tv', 'tv_japanese'),
+            'tv_kr': ('tv', 'tv', 'tv', 'tv_korean'),
+            'tv_anim': ('tv', 'tv', 'tv', 'tv_animation'),
+            'tv_doc': ('tv', 'tv', 'tv', 'tv_documentary'),
+            'show_in': ('tv', 'tv', 'show', 'show_domestic'),
+            'show_out': ('tv', 'tv', 'show', 'show_foreign')
         }
 
         # Get.
@@ -129,15 +129,16 @@ class WormDouban(WormCrawl):
         for type__ in type_dict:
             type_params = type_dict[type__]
             url = url_format % type_params[0]
+            referer = referer_format % type_params[1]
             params = {
                 'start': 0,
-                'limit': 100,
-                'category': type_params[1],
-                'type': type_params[2],
+                'limit': 10000,
+                'category': type_params[2],
+                'type': type_params[3],
                 'ck': 'Id-j'
             }
             headers = {
-                'referer': self.header_referer,
+                'referer': referer,
                 'user-agent': self.ua.edge
             }
 
@@ -160,6 +161,7 @@ class WormDouban(WormCrawl):
                     table_dict[id_]['type'] += f',{type__}'
                     continue
 
+                ### Base.
                 row = {
                     'id': id_,
                     'type': type__,
@@ -169,22 +171,30 @@ class WormDouban(WormCrawl):
                     'image': item['pic']['large'],
                     'image_low': item['pic']['normal']
                 }
-                if (
-                    item['episodes_info'] == ''
-                    or '全' in item['episodes_info']
-                ):
-                    row['episode'] = None
+
+                ### Score.
+                row['score'] = float(item['rating']['value']) or None
+                row['score_count'] = int(item['rating']['count']) or None
+
+                ### Episode.
+                if item['episodes_info'] == '':
+                    row['episode_now'] = row['episode'] = None
                 else:
-                    episode: str = search(r'\d+', item['episodes_info'])
-                    row['episode'] = int(episode)
-                des_parts = item['card_subtitle'].split(' / ', 4)
-                if len(des_parts) == 5:
-                    year, countries, classes, directors, stars = des_parts
-                elif len(des_parts) == 4:
-                    year, countries, classes, stars = des_parts
+                    row['episode_now'] = search(r'\d+', item['episodes_info'])
+                    if '全' in item['episodes_info']:
+                        row['episode'] = row['episode_now']
+                    else:
+                        row['episode'] = None
+
+                ### Information.
+                desc = item['card_subtitle'].split(' / ', 4)
+                if len(desc) == 5:
+                    year, countries, classes, directors, stars = desc
+                elif len(desc) == 4:
+                    year, countries, classes, stars = desc
                     directors = None
                 else:
-                    year, countries, classes = des_parts
+                    year, countries, classes = desc
                     directors = None
                     stars = None
                 row['year'] = int(year)
@@ -225,8 +235,9 @@ class WormDouban(WormCrawl):
 
         # Handle parameter.
         url = f'https://movie.douban.com/subject/{id_}/'
+        referer_format = 'https://search.douban.com/movie/subject_search?search_text=&cat=1002'
         headers = {
-            'referer': self.header_referer,
+            # 'referer': self.header_referer,
             'user-agent': self.ua.edge
         }
 
@@ -239,6 +250,8 @@ class WormDouban(WormCrawl):
 
         # Extract.
         text = response.text
+        from reykit.ros import File
+        File('test.txt').write(text)
         bs = BeautifulSoup(text, 'lxml')
         attrs = {'id': 'info'}
         element = bs.find(attrs=attrs)
@@ -257,15 +270,32 @@ class WormDouban(WormCrawl):
         year: str | None = search(pattern, text)
         infos['year'] = year and int(year)
 
+        ## Description.
+        selector = '#link-report-intra span[property="v:summary"]'
+        elements = bs.select(selector, limit=1)
+        if len(elements) == 0:
+            infos['desc'] = None
+        else:
+            element, = bs.select(selector, limit=1)
+            text = element.text.strip()
+            pattern = r'\s{2,}'
+            infos['desc'] = sub(pattern, text, '')
+
         ## Score.
         attrs='ll rating_num'
         element = bs.find(attrs=attrs)
-        infos['score'] = float(element.text)
+        if element.text == '':
+            infos['score'] = None
+        else:
+            infos['score'] = float(element.text)
 
         ## Score count.
-        attrs = {'property': 'v:votes'}
-        element = bs.find(attrs=attrs)
-        infos['score_count'] = int(element.text)
+        if infos['score'] is not None:
+            attrs = {'property': 'v:votes'}
+            element = bs.find(attrs=attrs)
+            infos['score_count'] = int(element.text)
+        else:
+            infos['score_count'] = None
 
         ## Directors.
         directors = info_dict.get('导演')
@@ -318,9 +348,16 @@ class WormDouban(WormCrawl):
 
         ## Comments.
         selector = '#hot-comments .comment-content'
-        elements = bs.select(selector, limit=1)
+        elements = bs.select(selector)
         comments = [
-            element.text.strip()
+            sub(
+                r'\s{2,}',
+                (
+                    element.find(attrs='full')
+                    or element.find(attrs='short')
+                ).text.strip(),
+                ''
+            )
             for element in elements
         ]
         infos['comment'] = comments
@@ -419,28 +456,19 @@ class WormDouban(WormCrawl):
                         'comment': 'Release year.'
                     },
                     {
+                        'name': 'desc',
+                        'type': 'varchar(1000)',
+                        'comment': 'Media content description.'
+                    },
+                    {
                         'name': 'score',
                         'type': 'float',
-                        'constraint': 'NOT NULL',
                         'comment': 'Media score, [0,10].'
                     },
                     {
                         'name': 'score_count',
                         'type': 'int',
-                        'constraint': 'NOT NULL',
                         'comment': 'Media score count.'
-                    },
-                    {
-                        'name': 'image',
-                        'type': 'varchar(150)',
-                        'constraint': 'NOT NULL',
-                        'comment': 'Picture image URL.'
-                    },
-                    {
-                        'name': 'image_low',
-                        'type': 'varchar(150)',
-                        'constraint': 'NOT NULL',
-                        'comment': 'Picture image low resolution URL.'
                     },
                     {
                         'name': 'minute',
@@ -450,7 +478,12 @@ class WormDouban(WormCrawl):
                     {
                         'name': 'episode',
                         'type': 'smallint',
-                        'comment': 'TV drama episode number.'
+                        'comment': 'TV drama total episode number.'
+                    },
+                    {
+                        'name': 'episode_now',
+                        'type': 'smallint',
+                        'comment': 'TV drama current episode number.'
                     },
                     {
                         'name': 'premiere',
@@ -496,6 +529,18 @@ class WormDouban(WormCrawl):
                         'name': 'comment',
                         'type': 'json',
                         'comment': 'Comment list.'
+                    },
+                    {
+                        'name': 'image',
+                        'type': 'varchar(150)',
+                        'constraint': 'NOT NULL',
+                        'comment': 'Picture image URL.'
+                    },
+                    {
+                        'name': 'image_low',
+                        'type': 'varchar(150)',
+                        'constraint': 'NOT NULL',
+                        'comment': 'Picture image low resolution URL.'
                     }
                 ],
                 'primary': 'id',
