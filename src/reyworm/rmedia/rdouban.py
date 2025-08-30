@@ -28,12 +28,14 @@ MediaRow = TypedDict(
     'MediaRow', 
     {
         'id': int,
+        'type': str,
         'name': str,
         'score': float,
         'score_count': int,
         'image': str,
         'image_low': str,
         'episode': int | None,
+        'episode_now': int | None,
         'year': int,
         'country': list[str],
         'class': list[str],
@@ -45,6 +47,7 @@ type MediaTable = list[MediaRow]
 MediaInfo = TypedDict(
     'MediaInfo',
     {
+        'type': str,
         'name': str,
         'year': int | None,
         'score': float,
@@ -60,7 +63,9 @@ MediaInfo = TypedDict(
         'minute': int | None,
         'alias': list[str] | None,
         'imdb': str | None,
-        'comment': list[str]
+        'comment': list[str],
+        'image': str,
+        'image_low': str
     }
 )
 
@@ -70,9 +75,6 @@ class WormDouban(WormCrawl):
     Douban worm type.
     Can create database used `self.build` method.
     """
-
-    base_url = 'https://www.douban.com/'
-    interval_s = None
 
 
     def __init__(self, database: Database | None = None) -> None:
@@ -109,30 +111,30 @@ class WormDouban(WormCrawl):
         # Handle parameter.
         url_format = 'https://m.douban.com/rexxar/api/v2/subject/recent_hot/%s'
         referer_format = 'https://movie.douban.com/%s/'
-        type_dict = {
-            'movie_cn': ('movie', 'explore', '热门', '华语'),
-            'movie_eu_us': ('movie', 'explore', '热门', '欧美'),
-            'movie_jp': ('movie', 'explore', '热门', '日本'),
-            'movie_kr': ('movie', 'explore', '热门', '韩国'),
-            'tv_cn': ('tv', 'tv', 'tv', 'tv_domestic'),
-            'tv_eu_us': ('tv', 'tv', 'tv', 'tv_american'),
-            'tv_jp': ('tv', 'tv', 'tv', 'tv_japanese'),
-            'tv_kr': ('tv', 'tv', 'tv', 'tv_korean'),
-            'tv_anim': ('tv', 'tv', 'tv', 'tv_animation'),
-            'tv_doc': ('tv', 'tv', 'tv', 'tv_documentary'),
-            'show_in': ('tv', 'tv', 'show', 'show_domestic'),
-            'show_out': ('tv', 'tv', 'show', 'show_foreign')
-        }
+        types_params = (
+            ('movie', 'explore', '热门', '华语'),
+            ('movie', 'explore', '热门', '欧美'),
+            ('movie', 'explore', '热门', '日本'),
+            ('movie', 'explore', '热门', '韩国'),
+            ('tv', 'tv', 'tv', 'tv_domestic'),
+            ('tv', 'tv', 'tv', 'tv_american'),
+            ('tv', 'tv', 'tv', 'tv_japanese'),
+            ('tv', 'tv', 'tv', 'tv_korean'),
+            ('tv', 'tv', 'tv', 'tv_animation'),
+            ('tv', 'tv', 'tv', 'tv_documentary'),
+            ('tv', 'tv', 'show', 'show_domestic'),
+            ('tv', 'tv', 'show', 'show_foreign')
+        )
 
         # Get.
         table_dict: dict[int, MediaRow] = {}
-        for type__ in type_dict:
-            type_params = type_dict[type__]
-            url = url_format % type_params[0]
+        for type_params in types_params:
+            type_ = type_params[0]
+            url = url_format % type_
             referer = referer_format % type_params[1]
             params = {
                 'start': 0,
-                'limit': 10000,
+                'limit': 1000,
                 'category': type_params[2],
                 'type': type_params[3],
                 'ck': 'Id-j'
@@ -158,13 +160,12 @@ class WormDouban(WormCrawl):
 
                 ### Exist.
                 if id_ in table_dict:
-                    table_dict[id_]['type'] += f',{type__}'
                     continue
 
                 ### Base.
                 row = {
                     'id': id_,
-                    'type': type__,
+                    'type': type_,
                     'name': item['title'],
                     'score': float(item['rating']['value']),
                     'score_count': int(item['rating']['count']),
@@ -211,10 +212,22 @@ class WormDouban(WormCrawl):
 
         # Database.
         if self.database is not None:
+            update_fields = (
+                'id',
+                'type',
+                'name',
+                'score',
+                'score_count',
+                'image',
+                'image_low',
+                'episode',
+                'episode_now',
+                'year'
+            )
             self.database.execute_insert(
                 (self.db_names['worm'], self.db_names['worm.douban_media']),
                 table,
-                'update'
+                update_fields
             )
 
         return table
@@ -235,11 +248,7 @@ class WormDouban(WormCrawl):
 
         # Handle parameter.
         url = f'https://movie.douban.com/subject/{id_}/'
-        referer_format = 'https://search.douban.com/movie/subject_search?search_text=&cat=1002'
-        headers = {
-            # 'referer': self.header_referer,
-            'user-agent': self.ua.edge
-        }
+        headers = {'user-agent': self.ua.edge}
 
         # Request.
         response = request(
@@ -249,10 +258,8 @@ class WormDouban(WormCrawl):
         )
 
         # Extract.
-        text = response.text
-        from reykit.ros import File
-        File('test.txt').write(text)
-        bs = BeautifulSoup(text, 'lxml')
+        html = response.text
+        bs = BeautifulSoup(html, 'lxml')
         attrs = {'id': 'info'}
         element = bs.find(attrs=attrs)
         pattern = r'([^\n]+?): ([^\n]+)\n'
@@ -261,13 +268,22 @@ class WormDouban(WormCrawl):
         split_chars = ' / '
         infos = {}
 
+        ## Type.
+        if (
+            'class="episode_list"' in html
+            or '该剧目前还未确定具体集数，如果你知道，欢迎' in bs.find(attrs='article').text
+        ):
+            infos['type'] = 'tv'
+        else:
+            infos['type'] = 'movie'
+
         ## Name.
         pattern = r'<title>\s*(.+?)\s*\(豆瓣\)\s*</title>'
-        infos['name'] = search(pattern, text)
+        infos['name'] = search(pattern, html)
 
         ## Year.
         pattern = r'<span class="year">\((\d{4})\)</span>'
-        year: str | None = search(pattern, text)
+        year: str | None = search(pattern, html)
         infos['year'] = year and int(year)
 
         ## Description.
@@ -282,8 +298,7 @@ class WormDouban(WormCrawl):
             infos['desc'] = sub(pattern, text, '')
 
         ## Score.
-        attrs='ll rating_num'
-        element = bs.find(attrs=attrs)
+        element = bs.find(attrs='ll rating_num')
         if element.text == '':
             infos['score'] = None
         else:
@@ -327,7 +342,7 @@ class WormDouban(WormCrawl):
         infos['premiere'] = premieres and {
             countrie: date
             for premiere in premieres.split(split_chars)
-            for date, countrie in (search(r'(\d{4}-\d{2}-\d{2})\((.+)\)', premiere),)
+            for date, countrie in (search(r'([^\(]+)\((.+)\)', premiere),)
         }
 
         ## Episode.
@@ -362,13 +377,28 @@ class WormDouban(WormCrawl):
         ]
         infos['comment'] = comments
 
+        ## Image.
+        selector = '.nbgnbg>img'
+        element, = bs.select(selector=selector, limit=1)
+        image_url = element.attrs['src']
+        infos['image_low'] = image_url.replace('.webp', '.jpg', 1)
+        infos['image'] = infos['image_low'].replace('/s_ratio_poster/', '/m_ratio_poster/', 1)
+
+        ## Video.
+        element = bs.find(attrs='related-pic-video')
+        if element is None:
+            infos['video'] = None
+        else:
+            infos['video'] = element.attrs['href']
+
         # Database.
         if self.database is not None:
             data = {'id': id_}
             data.update(infos)
-            self.database.execute_update(
+            self.database.execute_insert(
                 (self.db_names['worm'], self.db_names['worm.douban_media']),
-                data
+                data,
+                'update'
             )
 
         return infos
@@ -424,24 +454,9 @@ class WormDouban(WormCrawl):
                     },
                     {
                         'name': 'type',
-                        'type': 'varchar(97)',
+                        'type': 'varchar(5)',
                         'constraint': 'NOT NULL',
-                        'comment': (
-                            'Media type, '
-                            'comma join, '
-                            '"movie_cn" is chinese domestic movie, '
-                            '"movie_eu_us" is european and american movie, '
-                            '"movie_jp" is japanese movie, '
-                            '"movie_kr" is korean movie, '
-                            '"tv_cn" is chinese domestic TV drama, '
-                            '"tv_eu_us" is european and american TV drama, '
-                            '"tv_jp" is japanese TV drama, '
-                            '"tv_kr" is korean TV drama, '
-                            '"tv_anim" is animation TV drama, '
-                            '"tv_doc" is documentary TV drama, '
-                            '"show_in" is domestic variety show, '
-                            '"show_out" is overseas variety show.'
-                        )
+                        'comment': 'Media type.'
                     },
                     {
                         'name': 'name',
@@ -541,6 +556,11 @@ class WormDouban(WormCrawl):
                         'type': 'varchar(150)',
                         'constraint': 'NOT NULL',
                         'comment': 'Picture image low resolution URL.'
+                    },
+                    {
+                        'name': 'video',
+                        'type': 'varchar(150)',
+                        'comment': 'Preview video Douban page URL.'
                     }
                 ],
                 'primary': 'id',

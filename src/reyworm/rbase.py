@@ -36,8 +36,6 @@ class WormCrawl(WormBase):
     """
 
     ua = UserAgent()
-    base_url: str
-    interval_s: float | None
 
 
 class Browser(WormBase):
