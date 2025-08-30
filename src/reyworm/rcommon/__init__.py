@@ -9,8 +9,10 @@
 
 Modules
 -------
+rcalendar : Calendar methods.
 rtranslate : Translate methods.
 """
 
 
+from .rcalendar import *
 from .rtranslate import *
