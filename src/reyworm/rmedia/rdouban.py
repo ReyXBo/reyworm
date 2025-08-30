@@ -73,7 +73,7 @@ MediaInfo = TypedDict(
 class WormDouban(WormCrawl):
     """
     Douban worm type.
-    Can create database used `self.build` method.
+    Can create database used `self.build_db` method.
     """
 
 
@@ -565,6 +565,18 @@ class WormDouban(WormCrawl):
                 ],
                 'primary': 'id',
                 'indexes': [
+                    {
+                        'name': 'n_create_time',
+                        'fields': 'create_time',
+                        'type': 'noraml',
+                        'comment': 'Record create time normal index.'
+                    },
+                    {
+                        'name': 'n_update_time',
+                        'fields': 'update_time',
+                        'type': 'noraml',
+                        'comment': 'Record update time normal index.'
+                    },
                     {
                         'name': 'u_imdb',
                         'fields': 'imdb',
