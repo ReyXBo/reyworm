@@ -95,7 +95,7 @@ class WormDouban(WormCrawl):
         self.db_names = {
             'worm': 'worm',
             'worm.douban_media': 'douban_media',
-            'worm.douban_stats': 'douban_stats'
+            'worm.stats_douban': 'stats_douban'
         }
 
 
@@ -598,9 +598,9 @@ class WormDouban(WormCrawl):
         ## View stats.
         views_stats = [
 
-            ### 'douban_stats'.
+            ### 'stats_douban'.
             {
-                'path': (self.db_names['worm'], self.db_names['worm.douban_stats']),
+                'path': (self.db_names['worm'], self.db_names['worm.stats_douban']),
                 'items': [
                     {
                         'name': 'count',
