@@ -389,7 +389,8 @@ class WormDouban(WormCrawl):
         if element is None:
             infos['video'] = None
         else:
-            infos['video'] = element.attrs['href']
+            url = element.attrs['href']
+            infos['video'] = url.replace('#content', '', 1)
 
         # Database.
         if self.database is not None:
@@ -402,6 +403,34 @@ class WormDouban(WormCrawl):
             )
 
         return infos
+
+
+    def crawl_video_url(self, url: str) -> str:
+        """
+        Crawl video download URL from video page URL.
+
+        Parameters
+        ----------
+        url : Video page URL.
+
+        Returns
+        -------
+        Video download URL.
+        """
+
+        # Request.
+        headers = {'user-agent': self.ua.edge}
+        response = request(url, headers=headers, check=True)
+
+        # Extract.
+        pattern = r'<source src="([^"]+)"'
+        result: str | None = search(pattern, response.text)
+
+        # Check.
+        if result is None:
+            throw(AssertionError, result, url)
+
+        return result
 
 
     def build_db(self) -> None:
