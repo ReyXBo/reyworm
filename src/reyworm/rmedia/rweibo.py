@@ -37,7 +37,7 @@ def get_weibo_hot_search() -> list[dict[Literal['rank', 'time', 'title', 'type',
 
     # Request.
     url = 'https://weibo.com/ajax/side/searchBand'
-    timestamp_second = int(now('timestamp') / 10)
+    timestamp_second = now('timestamp_s')
     params = {
         'type': 'hot',
         'last_tab': 'hot',
@@ -45,9 +45,12 @@ def get_weibo_hot_search() -> list[dict[Literal['rank', 'time', 'title', 'type',
     }
     ua = UserAgent()
     headers = {
-        'cookie': 'SUB=_2AkMfz4Opf8NxqwFRmvoWyGPnZIh0zA_EieKpk3JyJRMxHRl-yT9yqmEItRB6NE-teHuyVk5ZEiU3azHTQckY6H3Ale7I; '
-            'XSRF-TOKEN=fijm7qRcprz35OqHAiOSs_s1; '
-            'WBPSESS=aEftxDBVPukTPk6-ZoWBoFyWKR9WXuoQPJZmP-r3bkFMPJn3Wjg95F_I7ilFxmRpNYa5qqAbIcLktpnZwknv0Fhbp7wuHdtQY0torFGlZa26JERUGb_Bdbs5Lf-nW8nk',
+        'cookie': (
+            'SUB=_2AkMf61vxf8NxqwFRmvgTzm_la4RxzAvEieKpt6oqJRMxHRl-yT9yqmIEtRB6NGt1HrGel2jwtm1TPoj0LB2qbH5Djjty; '
+            'SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9W5LjsD9P67XdiTS.eBzcX8n; '
+            'XSRF-TOKEN=JUL_aQ7hlSuI98dYZDxZdYNV; '
+            'WBPSESS=9-DrhgMbGnVf8No6y5BLAa-AdtUBbe2eTM9RR6Vd3EQO6R5LLxnh_NKkxuJ_a9m2rFeEEGrQEIgK1oe4gs2SnXWX_ZT5_XC9csUnNHL-q-ZJLzj9wbKvtMB4ZYVnfrM8'
+        ),
         'referer': 'https://weibo.com/newlogin?tabtype=weibo&gid=102803&openLoginLayer=0&url=https%3A%2F%2Fwww.weibo.com%2F',
         'user-agent': ua.edge,
     }
