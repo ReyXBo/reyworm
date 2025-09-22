@@ -224,7 +224,7 @@ class WormDouban(WormCrawl):
                 'episode_now',
                 'year'
             )
-            self.database.execute_insert(
+            self.database.execute.insert(
                 (self.db_names['worm'], self.db_names['worm.douban_media']),
                 table,
                 update_fields
@@ -396,7 +396,7 @@ class WormDouban(WormCrawl):
         if self.database is not None:
             data = {'id': id_}
             data.update(infos)
-            self.database.execute_insert(
+            self.database.execute.insert(
                 (self.db_names['worm'], self.db_names['worm.douban_media']),
                 data,
                 'update'
