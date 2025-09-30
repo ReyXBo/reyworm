@@ -225,7 +225,7 @@ class WormDouban(WormCrawl):
                 'year'
             )
             self.database.execute.insert(
-                (self.db_names['worm'], self.db_names['worm.douban_media']),
+                self.db_names['worm.douban_media'],
                 table,
                 update_fields
             )
@@ -397,7 +397,7 @@ class WormDouban(WormCrawl):
             data = {'id': id_}
             data.update(infos)
             self.database.execute.insert(
-                (self.db_names['worm'], self.db_names['worm.douban_media']),
+                self.db_names['worm.douban_media'],
                 data,
                 'update'
             )
@@ -435,7 +435,7 @@ class WormDouban(WormCrawl):
 
     def build_db(self) -> None:
         """
-        Check and build all standard databases and tables, by `self.db_names`.
+        Check and build database tables, by `self.db_names`.
         """
 
         # Check.
