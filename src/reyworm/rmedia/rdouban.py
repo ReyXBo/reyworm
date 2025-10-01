@@ -11,6 +11,7 @@
 
 from typing import TypedDict
 from bs4 import BeautifulSoup
+from reydb import rorm
 from reydb.rdb import Database
 from reykit.rbase import throw
 from reykit.rnet import request
@@ -20,7 +21,8 @@ from ..rbase import WormCrawl
 
 
 __all__ = (
-    'WormDouban',
+    'DatabaseTableDoubanMedia',
+    'WormDouban'
 )
 
 
@@ -70,33 +72,67 @@ MediaInfo = TypedDict(
 )
 
 
+class DatabaseTableDoubanMedia(rorm.Model, table=True):
+    """
+    Database `douban_media` table model.
+    """
+
+    __comment__ = 'Douban media information table.'
+    create_time: rorm.Datetime = rorm.Field(field_default=':create_time', not_null=True, index_n=True, comment='Record create time.')
+    update_time: rorm.Datetime = rorm.Field(field_default=':update_time', index_n=True, comment='Record update time.')
+    id: int = rorm.Field(rorm.types_mysql.INTEGER(unsigned=True), key=True, comment='Douban media ID.')
+    imdb: str = rorm.Field(rorm.types.CHAR(10), index_u=True, comment='IMDb ID.')
+    type: str = rorm.Field(rorm.types.VARCHAR(5), not_null=True, comment='Media type.')
+    name: str = rorm.Field(rorm.types.VARCHAR(50), not_null=True, index_n=True, comment='Media name.')
+    year: str = rorm.Field(rorm.types_mysql.YEAR, not_null=True, comment='Media content description.')
+    desc: str = rorm.Field(rorm.types.VARCHAR(1000), comment='Media content description.')
+    score: float = rorm.Field(rorm.types.FLOAT, comment='Media score, [0,10].')
+    score_count: int = rorm.Field(rorm.types_mysql.INTEGER(unsigned=True), comment='Media score count.')
+    minute: int = rorm.Field(rorm.types_mysql.SMALLINT(unsigned=True), comment='Movie or TV drama episode minute.')
+    episode: int = rorm.Field(rorm.types_mysql.SMALLINT(unsigned=True), comment='TV drama total episode number.')
+    episode_now: int = rorm.Field(rorm.types_mysql.SMALLINT(unsigned=True), comment='TV drama current episode number.')
+    premiere: str = rorm.Field(rorm.types.JSON, comment='Premiere region and date dictionary.')
+    country: str = rorm.Field(rorm.types.JSON, comment='Release country list.')
+    class_: str = rorm.Field(rorm.types.JSON, comment='Class list.', arg_name='class', filed_name='class')
+    director: str = rorm.Field(rorm.types.JSON, comment='Director list.')
+    scriptwriter: str = rorm.Field(rorm.types.JSON, comment='Scriptwriter list.')
+    language: str = rorm.Field(rorm.types.JSON, comment='Language list.')
+    alias: str = rorm.Field(rorm.types.JSON, comment='Alias list.')
+    comment: str = rorm.Field(rorm.types.JSON, comment='Comment list.')
+    image: str = rorm.Field(rorm.types.VARCHAR(150), not_null=True, comment='Picture image URL.')
+    image_low: str = rorm.Field(rorm.types.VARCHAR(150), not_null=True, comment='Picture image low resolution URL.')
+    video: str = rorm.Field(rorm.types.VARCHAR(150), comment='Preview video Douban page URL.')
+
+
 class WormDouban(WormCrawl):
     """
     Douban worm type.
     Can create database used `self.build_db` method.
+
+    Attributes
+    ----------
+    db_names : Database table name mapping dictionary.
     """
 
+    db_names = {
+        'douban_media': 'douban_media',
+        'stats_douban': 'stats_douban'
+    }
 
-    def __init__(self, database: Database | None = None) -> None:
+
+    def __init__(self, db: Database | None = None) -> None:
         """
         Build instance attributes.
 
         Parameters
         ----------
-        database : `Database` instance.
+        db : `Database` instance.
             - `None`: Not use database.
             - `Database`: Automatic record to database.
         """
 
         # Build.
-        self.database = database
- 
-        ## Database path name.
-        self.db_names = {
-            'worm': 'worm',
-            'worm.douban_media': 'douban_media',
-            'worm.stats_douban': 'stats_douban'
-        }
+        self.db = db
 
 
     def crawl_table(self) -> MediaTable:
@@ -211,7 +247,7 @@ class WormDouban(WormCrawl):
         table = list(table_dict.values())
 
         # Database.
-        if self.database is not None:
+        if self.db is not None:
             update_fields = (
                 'id',
                 'type',
@@ -224,8 +260,8 @@ class WormDouban(WormCrawl):
                 'episode_now',
                 'year'
             )
-            self.database.execute.insert(
-                self.db_names['worm.douban_media'],
+            self.db.execute.insert(
+                self.db_names['douban_media'],
                 table,
                 update_fields
             )
@@ -393,11 +429,11 @@ class WormDouban(WormCrawl):
             infos['video'] = url.replace('#content', '', 1)
 
         # Database.
-        if self.database is not None:
+        if self.db is not None:
             data = {'id': id_}
             data.update(infos)
-            self.database.execute.insert(
-                self.db_names['worm.douban_media'],
+            self.db.execute.insert(
+                self.db_names['douban_media'],
                 data,
                 'update'
             )
@@ -439,203 +475,25 @@ class WormDouban(WormCrawl):
         """
 
         # Check.
-        if self.database is None:
-            throw(ValueError, self.database)
+        if self.db is None:
+            throw(ValueError, self.db)
 
         # Set parameter.
 
-        ## Database.
-        databases = [
-            {
-                'name': self.db_names['worm']
-            }
-        ]
-
         ## Table.
-        tables = [
-
-            ### 'douban_media'.
-            {
-                'path': (self.db_names['worm'], self.db_names['worm.douban_media']),
-                'fields': [
-                    {
-                        'name': 'create_time',
-                        'type': 'datetime',
-                        'constraint': 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
-                        'comment': 'Record create time.'
-                    },
-                    {
-                        'name': 'update_time',
-                        'type': 'datetime',
-                        'constraint': 'DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP',
-                        'comment': 'Record update time.'
-                    },
-                    {
-                        'name': 'id',
-                        'type': 'int unsigned',
-                        'constraint': 'NOT NULL',
-                        'comment': 'Douban media ID.'
-                    },
-                    {
-                        'name': 'imdb',
-                        'type': 'char(10)',
-                        'comment': 'IMDb ID.'
-                    },
-                    {
-                        'name': 'type',
-                        'type': 'varchar(5)',
-                        'constraint': 'NOT NULL',
-                        'comment': 'Media type.'
-                    },
-                    {
-                        'name': 'name',
-                        'type': 'varchar(50)',
-                        'constraint': 'NOT NULL',
-                        'comment': 'Media name.'
-                    },
-                    {
-                        'name': 'year',
-                        'type': 'year',
-                        'constraint': 'NOT NULL',
-                        'comment': 'Release year.'
-                    },
-                    {
-                        'name': 'desc',
-                        'type': 'varchar(1000)',
-                        'comment': 'Media content description.'
-                    },
-                    {
-                        'name': 'score',
-                        'type': 'float',
-                        'comment': 'Media score, [0,10].'
-                    },
-                    {
-                        'name': 'score_count',
-                        'type': 'int',
-                        'comment': 'Media score count.'
-                    },
-                    {
-                        'name': 'minute',
-                        'type': 'smallint',
-                        'comment': 'Movie or TV drama episode minute.'
-                    },
-                    {
-                        'name': 'episode',
-                        'type': 'smallint',
-                        'comment': 'TV drama total episode number.'
-                    },
-                    {
-                        'name': 'episode_now',
-                        'type': 'smallint',
-                        'comment': 'TV drama current episode number.'
-                    },
-                    {
-                        'name': 'premiere',
-                        'type': 'json',
-                        'comment': 'Premiere region and date dictionary.'
-                    },
-                    {
-                        'name': 'country',
-                        'type': 'json',
-                        'comment': 'Release country list.'
-                    },
-                    {
-                        'name': 'class',
-                        'type': 'json',
-                        'comment': 'Class list.'
-                    },
-                    {
-                        'name': 'director',
-                        'type': 'json',
-                        'comment': 'Director list.'
-                    },
-                    {
-                        'name': 'star',
-                        'type': 'json',
-                        'comment': 'Star list.'
-                    },
-                    {
-                        'name': 'scriptwriter',
-                        'type': 'json',
-                        'comment': 'Scriptwriter list.'
-                    },
-                    {
-                        'name': 'language',
-                        'type': 'json',
-                        'comment': 'Language list.'
-                    },
-                    {
-                        'name': 'alias',
-                        'type': 'json',
-                        'comment': 'Alias list.'
-                    },
-                    {
-                        'name': 'comment',
-                        'type': 'json',
-                        'comment': 'Comment list.'
-                    },
-                    {
-                        'name': 'image',
-                        'type': 'varchar(150)',
-                        'constraint': 'NOT NULL',
-                        'comment': 'Picture image URL.'
-                    },
-                    {
-                        'name': 'image_low',
-                        'type': 'varchar(150)',
-                        'constraint': 'NOT NULL',
-                        'comment': 'Picture image low resolution URL.'
-                    },
-                    {
-                        'name': 'video',
-                        'type': 'varchar(150)',
-                        'comment': 'Preview video Douban page URL.'
-                    }
-                ],
-                'primary': 'id',
-                'indexes': [
-                    {
-                        'name': 'n_create_time',
-                        'fields': 'create_time',
-                        'type': 'noraml',
-                        'comment': 'Record create time normal index.'
-                    },
-                    {
-                        'name': 'n_update_time',
-                        'fields': 'update_time',
-                        'type': 'noraml',
-                        'comment': 'Record update time normal index.'
-                    },
-                    {
-                        'name': 'u_imdb',
-                        'fields': 'imdb',
-                        'type': 'unique',
-                        'comment': 'IMDb number unique index.'
-                    },
-                    {
-                        'name': 'n_name',
-                        'fields': 'name',
-                        'type': 'noraml',
-                        'comment': 'Media name normal index.'
-                    }
-                ],
-                'comment': 'Douban media information table.'
-            }
-
-        ]
+        tables = [DatabaseTableDoubanMedia]
+        DatabaseTableDoubanMedia._set_name(self.db_names['douban_media'])
 
         ## View stats.
         views_stats = [
-
-            ### 'stats_douban'.
             {
-                'path': (self.db_names['worm'], self.db_names['worm.stats_douban']),
+                'path': self.db_names['stats_douban'],
                 'items': [
                     {
                         'name': 'count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{self.db_names['worm']}`.`{self.db_names['worm.douban_media']}`'
+                            f'FROM `{self.db.database}`.`{self.db_names['douban_media']}`'
                         ),
                         'comment': 'Media count.'
                     },
@@ -643,7 +501,7 @@ class WormDouban(WormCrawl):
                         'name': 'past_day_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{self.db_names['worm']}`.`{self.db_names['worm.douban_media']}`\n'
+                            f'FROM `{self.db.database}`.`{self.db_names['douban_media']}`\n'
                             'WHERE TIMESTAMPDIFF(DAY, `create_time`, NOW()) = 0'
                         ),
                         'comment': 'Media count in the past day.'
@@ -652,7 +510,7 @@ class WormDouban(WormCrawl):
                         'name': 'past_week_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{self.db_names['worm']}`.`{self.db_names['worm.douban_media']}`\n'
+                            f'FROM `{self.db.database}`.`{self.db_names['douban_media']}`\n'
                             'WHERE TIMESTAMPDIFF(DAY, `create_time`, NOW()) <= 6'
                         ),
                         'comment': 'Media count in the past week.'
@@ -661,7 +519,7 @@ class WormDouban(WormCrawl):
                         'name': 'past_month_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{self.db_names['worm']}`.`{self.db_names['worm.douban_media']}`\n'
+                            f'FROM `{self.db.database}`.`{self.db_names['douban_media']}`\n'
                             'WHERE TIMESTAMPDIFF(DAY, `create_time`, NOW()) <= 29'
                         ),
                         'comment': 'Media count in the past month.'
@@ -670,7 +528,7 @@ class WormDouban(WormCrawl):
                         'name': 'avg_score',
                         'select': (
                             'SELECT ROUND(AVG(`score`), 1)\n'
-                            f'FROM `{self.db_names['worm']}`.`{self.db_names['worm.douban_media']}`'
+                            f'FROM `{self.db.database}`.`{self.db_names['douban_media']}`'
                         ),
                         'comment': 'Media average score.'
                     },
@@ -678,7 +536,7 @@ class WormDouban(WormCrawl):
                         'name': 'score_count',
                         'select': (
                             'SELECT FORMAT(SUM(`score_count`), 0)\n'
-                            f'FROM `{self.db_names['worm']}`.`{self.db_names['worm.douban_media']}`'
+                            f'FROM `{self.db.database}`.`{self.db_names['douban_media']}`'
                         ),
                         'comment': 'Media score count.'
                     },
@@ -686,7 +544,7 @@ class WormDouban(WormCrawl):
                         'name': 'last_create_time',
                         'select': (
                             'SELECT MAX(`create_time`)\n'
-                            f'FROM `{self.db_names['worm']}`.`{self.db_names['worm.douban_media']}`'
+                            f'FROM `{self.db.database}`.`{self.db_names['douban_media']}`'
                         ),
                         'comment': 'Media last record create time.'
                     },
@@ -694,15 +552,13 @@ class WormDouban(WormCrawl):
                         'name': 'last_update_time',
                         'select': (
                             'SELECT IFNULL(MAX(`update_time`), MAX(`create_time`))\n'
-                            f'FROM `{self.db_names['worm']}`.`{self.db_names['worm.douban_media']}`'
+                            f'FROM `{self.db.database}`.`{self.db_names['douban_media']}`'
                         ),
                         'comment': 'Media last record update time.'
                     }
                 ]
-
             }
-
         ]
 
         # Build.
-        self.database.build.build(databases, tables, views_stats=views_stats)
+        self.db.build.build(tables=tables, views_stats=views_stats, skip=True)
