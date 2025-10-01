@@ -60,7 +60,7 @@ class Browser(WormBase):
         headless : Whether use headless mode.
         """
 
-        # Handle parameter.
+        # Set parameter.
         match driver:
             case 'edge':
                 driver_type = Edge
@@ -94,7 +94,7 @@ class Browser(WormBase):
         params : URL parameters.
         """
 
-        # Handle parameter.
+        # Set parameter.
         params = params or {}
         url = join_url(url, params)
 
@@ -112,7 +112,7 @@ class Browser(WormBase):
         Page elements document.
         """
 
-        # Handle parameter.
+        # Set parameter.
         page_source = self.driver.page_source
 
         return page_source
@@ -138,7 +138,7 @@ def get_page(
     Page elements document.
     """
 
-    # Handle parameter.
+    # Set parameter.
     browser = Browser(headless=True)
 
     # Request.

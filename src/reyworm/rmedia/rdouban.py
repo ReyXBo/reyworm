@@ -108,7 +108,7 @@ class WormDouban(WormCrawl):
         Media table.
         """
 
-        # Handle parameter.
+        # Set parameter.
         url_format = 'https://m.douban.com/rexxar/api/v2/subject/recent_hot/%s'
         referer_format = 'https://movie.douban.com/%s/'
         types_params = (
@@ -246,7 +246,7 @@ class WormDouban(WormCrawl):
         Media information.
         """
 
-        # Handle parameter.
+        # Set parameter.
         url = f'https://movie.douban.com/subject/{id_}/'
         headers = {'user-agent': self.ua.edge}
 
