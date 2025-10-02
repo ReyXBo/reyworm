@@ -77,6 +77,7 @@ class DatabaseTableDoubanMedia(rorm.Model, table=True):
     Database `douban_media` table model.
     """
 
+    __name__ = 'douban_media'
     __comment__ = 'Douban media information table.'
     create_time: rorm.Datetime = rorm.Field(field_default=':create_time', not_null=True, index_n=True, comment='Record create time.')
     update_time: rorm.Datetime = rorm.Field(field_default=':update_time', index_n=True, comment='Record update time.')
