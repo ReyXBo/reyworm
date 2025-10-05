@@ -31,7 +31,7 @@ def trans_baidu(text: str) -> str:
     Translated text.
     """
 
-    # Set parameter.
+    # Parameter.
     url = 'https://fanyi.baidu.com/sug'
     data = {
         'kw': text
@@ -63,7 +63,7 @@ def trans(text: str) -> str:
     Translated text.
     """
 
-    # Set parameter.
+    # Parameter.
     translate_func = [
         trans_baidu
     ]
