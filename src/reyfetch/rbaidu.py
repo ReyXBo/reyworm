@@ -113,17 +113,12 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
     url_doc : API document URL.
     LangEnum : Baidu Fanyi APT language enumeration type.
     LangEnum : Baidu Fanyi APT language auto type enumeration.
-    db_names : Database table name mapping dictionary.
     """
 
     url_api = 'http://api.fanyi.baidu.com/api/trans/vip/translate'
     url_doc = 'https://fanyi-api.baidu.com/product/113'
     LangEnum = FetchRequestBaiduTranslateLangEnum
     LangAutoEnum = FetchRequestBaiduTranslateLangAutoEnum
-    db_names = {
-        'baidu_trans': 'baidu_trans',
-        'stats_baidu_trans': 'stats_baidu_trans'
-    }
 
 
     def __init__(
@@ -151,7 +146,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
         self.max_len = max_len
 
         # Database.
-        self.db_record = FetchRequestDatabaseRecord(self, 'api', 'baidu_trans')
+        self.db_record = FetchRequestDatabaseRecord(self, 'baidu_trans')
 
 
     def sign(self, text: str, num: int) -> str:
@@ -331,7 +326,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
 
     def build_db(self) -> None:
         """
-        Check and build database tables, by `self.db_names`.
+        Check and build database tables.
         """
 
         # Check.
@@ -339,21 +334,21 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
             throw(ValueError, self.db)
 
         # Parameter.
+        database = self.db.database
 
         ## Table.
         tables = [DatabaseTableBaiduTrans]
-        DatabaseTableBaiduTrans._set_name(self.db_names['baidu_trans'])
 
         ## View stats.
         views_stats = [
             {
-                'path': self.db_names['stats_baidu_trans'],
+                'path': 'stats_baidu_trans',
                 'items': [
                     {
                         'name': 'count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['baidu_trans']}`'
+                            f'FROM `{database}`.`baidu_trans`'
                         ),
                         'comment': 'Request count.'
                     },
@@ -361,7 +356,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                         'name': 'past_day_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['baidu_trans']}`'
+                            f'FROM `{database}`.`baidu_trans`'
                             'WHERE TIMESTAMPDIFF(DAY, `request_time`, NOW()) = 0'
                         ),
                         'comment': 'Request count in the past day.'
@@ -370,7 +365,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                         'name': 'past_week_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['baidu_trans']}`'
+                            f'FROM `{database}`.`baidu_trans`'
                             'WHERE TIMESTAMPDIFF(DAY, `request_time`, NOW()) <= 6'
                         ),
                         'comment': 'Request count in the past week.'
@@ -379,7 +374,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                         'name': 'past_month_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['baidu_trans']}`'
+                            f'FROM `{database}`.`baidu_trans`'
                             'WHERE TIMESTAMPDIFF(DAY, `request_time`, NOW()) <= 29'
                         ),
                         'comment': 'Request count in the past month.'
@@ -388,7 +383,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                         'name': 'total_input',
                         'select': (
                             'SELECT FORMAT(SUM(LENGTH(`input`)), 0)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['baidu_trans']}`'
+                            f'FROM `{database}`.`baidu_trans`'
                         ),
                         'comment': 'Input original text total character.'
                     },
@@ -396,7 +391,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                         'name': 'total_output',
                         'select': (
                             'SELECT FORMAT(SUM(LENGTH(`output`)), 0)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['baidu_trans']}`'
+                            f'FROM `{database}`.`baidu_trans`'
                         ),
                         'comment': 'Output translation text total character.'
                     },
@@ -404,7 +399,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                         'name': 'avg_input',
                         'select': (
                             'SELECT FORMAT(AVG(LENGTH(`input`)), 0)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['baidu_trans']}`'
+                            f'FROM `{database}`.`baidu_trans`'
                         ),
                         'comment': 'Input original text average character.'
                     },
@@ -412,7 +407,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                         'name': 'avg_output',
                         'select': (
                             'SELECT FORMAT(AVG(LENGTH(`output`)), 0)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['baidu_trans']}`'
+                            f'FROM `{database}`.`baidu_trans`'
                         ),
                         'comment': 'Output translation text average character.'
                     },
@@ -420,7 +415,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                         'name': 'last_time',
                         'select': (
                             'SELECT MAX(`request_time`)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['baidu_trans']}`'
+                            f'FROM `{database}`.`baidu_trans`'
                         ),
                         'comment': 'Last record request time.'
                     }

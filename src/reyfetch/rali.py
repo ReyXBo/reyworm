@@ -92,16 +92,11 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
     url_api : API request URL.
     url_doc : API document URL.
     model = API AI model type.
-    db_names : Database table name mapping dictionary.
     """
 
     url_api = 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation'
     url_doc = 'https://help.aliyun.com/zh/model-studio/use-qwen-by-calling-api?spm=a2c4g.11186623.0.0.330e7d9dSBCaZQ'
     model = 'qwen-turbo-latest'
-    db_names = {
-        'ali_qwen': 'ali_qwen',
-        'stats_ali_qwen': 'stats_ali_qwen'
-    }
 
 
     def __init__(
@@ -141,7 +136,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
         self.data: ChatRecordsData = {}
 
         # Database.
-        self.db_record = FetchRequestDatabaseRecord(self, 'api', 'ali_qwen')
+        self.db_record = FetchRequestDatabaseRecord(self, 'ali_qwen')
 
 
     @overload
@@ -832,7 +827,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
 
     def build_db(self) -> None:
         """
-        Check and build database tables, by `self.db_names`.
+        Check and build database tables.
         """
 
         # Check.
@@ -840,21 +835,21 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
             throw(ValueError, self.db)
 
         # Parameter.
+        database = self.db.database
 
         ## Table.
         tables = [DatabaseTableAliQwen]
-        DatabaseTableAliQwen._set_name(self.db_names['ali_qwen'])
 
         ## View stats.
         views_stats = [
             {
-                'path': self.db_names['stats_ali_qwen'],
+                'path': 'stats_ali_qwen',
                 'items': [
                     {
                         'name': 'count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['ali_qwen']}`'
+                            f'FROM `{database}`.`ali_qwen`'
                         ),
                         'comment': 'Request count.'
                     },
@@ -862,7 +857,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'past_day_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['ali_qwen']}`'
+                            f'FROM `{database}`.`ali_qwen`'
                             'WHERE TIMESTAMPDIFF(DAY, `request_time`, NOW()) = 0'
                         ),
                         'comment': 'Request count in the past day.'
@@ -871,7 +866,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'past_week_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['ali_qwen']}`'
+                            f'FROM `{database}`.`ali_qwen`'
                             'WHERE TIMESTAMPDIFF(DAY, `request_time`, NOW()) <= 6'
                         ),
                         'comment': 'Request count in the past week.'
@@ -880,7 +875,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'past_month_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['ali_qwen']}`'
+                            f'FROM `{database}`.`ali_qwen`'
                             'WHERE TIMESTAMPDIFF(DAY, `request_time`, NOW()) <= 29'
                         ),
                         'comment': 'Request count in the past month.'
@@ -889,7 +884,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'total_token',
                         'select': (
                             'SELECT FORMAT(SUM(`token_total`), 0)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['ali_qwen']}`'
+                            f'FROM `{database}`.`ali_qwen`'
                         ),
                         'comment': 'Usage total Token.'
                     },
@@ -897,7 +892,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'total_token_input',
                         'select': (
                             'SELECT FORMAT(SUM(`token_input`), 0)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['ali_qwen']}`'
+                            f'FROM `{database}`.`ali_qwen`'
                         ),
                         'comment': 'Usage input total Token.'
                     },
@@ -905,7 +900,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'total_token_output',
                         'select': (
                             'SELECT FORMAT(SUM(`token_output`), 0)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['ali_qwen']}`'
+                            f'FROM `{database}`.`ali_qwen`'
                         ),
                         'comment': 'Usage output total Token.'
                     },
@@ -913,7 +908,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'total_token_output_think',
                         'select': (
                             'SELECT FORMAT(SUM(`token_output_think`), 0)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['ali_qwen']}`'
+                            f'FROM `{database}`.`ali_qwen`'
                         ),
                         'comment': 'Usage output think total Token.'
                     },
@@ -921,7 +916,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'avg_token',
                         'select': (
                             'SELECT FORMAT(AVG(`token_total`), 0)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['ali_qwen']}`'
+                            f'FROM `{database}`.`ali_qwen`'
                         ),
                         'comment': 'Usage average Token.'
                     },
@@ -929,7 +924,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'avg_token_input',
                         'select': (
                             'SELECT FORMAT(AVG(`token_input`), 0)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['ali_qwen']}`'
+                            f'FROM `{database}`.`ali_qwen`'
                         ),
                         'comment': 'Usage input average Token.'
                     },
@@ -937,7 +932,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'avg_token_output',
                         'select': (
                             'SELECT FORMAT(AVG(`token_output`), 0)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['ali_qwen']}`'
+                            f'FROM `{database}`.`ali_qwen`'
                         ),
                         'comment': 'Usage output average Token.'
                     },
@@ -945,7 +940,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'avg_token_output_think',
                         'select': (
                             'SELECT FORMAT(AVG(`token_output_think`), 0)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['ali_qwen']}`'
+                            f'FROM `{database}`.`ali_qwen`'
                         ),
                         'comment': 'Usage output think average Token.'
                     },
@@ -953,7 +948,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'last_time',
                         'select': (
                             'SELECT MAX(`request_time`)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['ali_qwen']}`'
+                            f'FROM `{database}`.`ali_qwen`'
                         ),
                         'comment': 'Last record request time.'
                     }

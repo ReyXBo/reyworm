@@ -109,16 +109,7 @@ class FetchCrawlDouban(FetchCrawl):
     """
     Crawl Douban Web fetch type.
     Can create database used `self.build_db` method.
-
-    Attributes
-    ----------
-    db_names : Database table name mapping dictionary.
     """
-
-    db_names = {
-        'douban_media': 'douban_media',
-        'stats_douban': 'stats_douban'
-    }
 
 
     def __init__(self, db: Database | None = None) -> None:
@@ -262,7 +253,7 @@ class FetchCrawlDouban(FetchCrawl):
                 'year'
             )
             self.db.execute.insert(
-                self.db_names['douban_media'],
+                'douban_media',
                 table,
                 update_fields
             )
@@ -434,7 +425,7 @@ class FetchCrawlDouban(FetchCrawl):
             data = {'id': id_}
             data.update(infos)
             self.db.execute.insert(
-                self.db_names['douban_media'],
+                'douban_media',
                 data,
                 'update'
             )
@@ -472,7 +463,7 @@ class FetchCrawlDouban(FetchCrawl):
 
     def build_db(self) -> None:
         """
-        Check and build database tables, by `self.db_names`.
+        Check and build database tables.
         """
 
         # Check.
@@ -480,21 +471,21 @@ class FetchCrawlDouban(FetchCrawl):
             throw(ValueError, self.db)
 
         # Parameter.
+        database = self.db.database
 
         ## Table.
         tables = [DatabaseTableDoubanMedia]
-        DatabaseTableDoubanMedia._set_name(self.db_names['douban_media'])
 
         ## View stats.
         views_stats = [
             {
-                'path': self.db_names['stats_douban'],
+                'path': 'stats_douban',
                 'items': [
                     {
                         'name': 'count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['douban_media']}`'
+                            f'FROM `{database}`.`douban_media`'
                         ),
                         'comment': 'Media count.'
                     },
@@ -502,7 +493,7 @@ class FetchCrawlDouban(FetchCrawl):
                         'name': 'past_day_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['douban_media']}`\n'
+                            f'FROM `{database}`.`douban_media`\n'
                             'WHERE TIMESTAMPDIFF(DAY, `create_time`, NOW()) = 0'
                         ),
                         'comment': 'Media count in the past day.'
@@ -511,7 +502,7 @@ class FetchCrawlDouban(FetchCrawl):
                         'name': 'past_week_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['douban_media']}`\n'
+                            f'FROM `{database}`.`douban_media`\n'
                             'WHERE TIMESTAMPDIFF(DAY, `create_time`, NOW()) <= 6'
                         ),
                         'comment': 'Media count in the past week.'
@@ -520,7 +511,7 @@ class FetchCrawlDouban(FetchCrawl):
                         'name': 'past_month_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['douban_media']}`\n'
+                            f'FROM `{database}`.`douban_media`\n'
                             'WHERE TIMESTAMPDIFF(DAY, `create_time`, NOW()) <= 29'
                         ),
                         'comment': 'Media count in the past month.'
@@ -529,7 +520,7 @@ class FetchCrawlDouban(FetchCrawl):
                         'name': 'avg_score',
                         'select': (
                             'SELECT ROUND(AVG(`score`), 1)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['douban_media']}`'
+                            f'FROM `{database}`.`douban_media`'
                         ),
                         'comment': 'Media average score.'
                     },
@@ -537,7 +528,7 @@ class FetchCrawlDouban(FetchCrawl):
                         'name': 'score_count',
                         'select': (
                             'SELECT FORMAT(SUM(`score_count`), 0)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['douban_media']}`'
+                            f'FROM `{database}`.`douban_media`'
                         ),
                         'comment': 'Media score count.'
                     },
@@ -545,7 +536,7 @@ class FetchCrawlDouban(FetchCrawl):
                         'name': 'last_create_time',
                         'select': (
                             'SELECT MAX(`create_time`)\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['douban_media']}`'
+                            f'FROM `{database}`.`douban_media`'
                         ),
                         'comment': 'Media last record create time.'
                     },
@@ -553,7 +544,7 @@ class FetchCrawlDouban(FetchCrawl):
                         'name': 'last_update_time',
                         'select': (
                             'SELECT IFNULL(MAX(`update_time`), MAX(`create_time`))\n'
-                            f'FROM `{self.db.database}`.`{self.db_names['douban_media']}`'
+                            f'FROM `{database}`.`douban_media`'
                         ),
                         'comment': 'Media last record update time.'
                     }

@@ -166,7 +166,6 @@ class FetchRequestWithDatabase(FetchRequest):
     """
 
     db: Database | None
-    db_names: dict[str, str]
     build_db: MethodType
 
 
@@ -179,7 +178,6 @@ class FetchRequestDatabaseRecord(FetchRequest):
     def __init__(
         self,
         api: FetchRequestWithDatabase | None = None,
-        database: str | None = None,
         table: str | None = None
     ) -> None:
         """
@@ -189,13 +187,11 @@ class FetchRequestDatabaseRecord(FetchRequest):
         ----------
         api : `API` instance.
             - `None`: Not record.
-        database : Index `API.db_names` database name.
-        table : Index `API.db_names` table name.
+        table : Table name.
         """
 
         # Build.
         self.api = api
-        self.database = database
         self.table = table
         self.data: dict[int, dict[str, Any]] = {}
 
@@ -234,10 +230,9 @@ class FetchRequestDatabaseRecord(FetchRequest):
         # Parameter.
         thread_id = threading_get_ident()
         record = self.data.setdefault(thread_id, {})
-        table = self.api.db_names[self.table]
 
         # Insert.
-        self.api.db.execute.insert(table, record)
+        self.api.db.execute.insert(self.table, record)
 
         # Delete.
         del self.data[thread_id]
