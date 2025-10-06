@@ -5,7 +5,7 @@
 @Time    : 2024-01-22 14:06:05
 @Author  : Rey
 @Contact : reyxbo@163.com
-@Explain : Toutiao methods.
+@Explain : Toutiao Web fetch methods.
 """
 
 
@@ -14,13 +14,13 @@ from reykit.rnet import request
 
 
 __all__ = (
-    'get_toutiao_hot_search',
+    'crawl_toutiao_hot_search',
 )
 
 
-def get_toutiao_hot_search() -> list[dict[Literal['title', 'type', 'label', 'hot', 'url', 'image'], Any]]:
+def crawl_toutiao_hot_search() -> list[dict[Literal['title', 'type', 'label', 'hot', 'url', 'image'], Any]]:
     """
-    Get hot search table from `toutiao` website.
+    Crawl Toutiao Web hot search table.
 
     Returns
     -------

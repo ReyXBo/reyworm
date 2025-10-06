@@ -848,7 +848,7 @@ wheels = [
 ]
 
 [[package]]
-name = "reyworm"
+name = "reyfetch"
 version = "1.0.9"
 source = { editable = "." }
 dependencies = [

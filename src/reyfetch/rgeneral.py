@@ -5,7 +5,7 @@
 @Time    : 2024-01-10 21:57:08
 @Author  : Rey
 @Contact : reyxbo@163.com
-@Explain : Calendar methods.
+@Explain : General methods.
 """
 
 
@@ -16,17 +16,17 @@ from reykit.rtime import now
 
 
 __all__ = (
-    'get_calendar',
-    'get_lunar_calendar'
+    'crawl_calendar',
+    'crawl_lunar_calendar'
 )
 
 
-def get_calendar(
+def crawl_calendar(
     year: int | None = None,
     month: int | None = None
 ) -> list[dict]:
     """
-    Get calendar table for three months from `baidu` website.
+    Crawl Baidu Web calendar table.
 
     Parameters
     ----------
@@ -120,12 +120,12 @@ def get_calendar(
     return table
 
 
-def get_lunar_calendar(
+def crawl_lunar_calendar(
     year: int | None = None,
     month: int | None = None
 ) -> list[dict]:
     """
-    Get lunar calendar table for one month from `rili` website.
+    Crawl Rili Web lunar calendar table.
 
     Parameters
     ----------

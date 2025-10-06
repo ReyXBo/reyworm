@@ -5,7 +5,7 @@
 @Time    : 2025-08-25 15:37:50
 @Author  : Rey
 @Contact : reyxbo@163.com
-@Explain : Douban methods.
+@Explain : Douban Web fetch methods.
 """
 
 
@@ -17,12 +17,12 @@ from reykit.rbase import throw
 from reykit.rnet import request
 from reykit.rre import search, findall, sub
 
-from ..rbase import WormCrawl
+from .rbase import FetchCrawl
 
 
 __all__ = (
     'DatabaseTableDoubanMedia',
-    'WormDouban'
+    'FetchCrawlDouban'
 )
 
 
@@ -105,9 +105,9 @@ class DatabaseTableDoubanMedia(rorm.Model, table=True):
     video: str = rorm.Field(rorm.types.VARCHAR(150), comment='Preview video Douban page URL.')
 
 
-class WormDouban(WormCrawl):
+class FetchCrawlDouban(FetchCrawl):
     """
-    Douban worm type.
+    Crawl Douban Web fetch type.
     Can create database used `self.build_db` method.
 
     Attributes

@@ -1,7 +1,9 @@
-# reyworm  
-> Rey's worm method set.
+# reyfetch
+
+> Web data fetch method set.
 
 ## Install
+
 ```
-pip install reyworm
+pip install reyfetch
 ```

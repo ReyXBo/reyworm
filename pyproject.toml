@@ -1,11 +1,11 @@
 [project]
-name = "reyworm"
-version = "1.0.34"
-description = "Worm method set."
+name = "reyfetch"
+version = "1.0.35"
+description = "Web data fetch method set."
 readme = "README.md"
 requires-python = ">=3.12"
 license = {file = "LICENSE"}
-keywords = ["rey", "reyxbo", "worm"]
+keywords = ["rey", "reyxbo", "fetch", "request API", "crawl Web"]
 authors = [
     {name = "Rey", email = "reyxbo@163.com"}
 ]
@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.urls]
-homepage = "https://github.com/reyxbo/reyworm/"
+homepage = "https://github.com/reyxbo/reyfetch/"
 
 [build-system]
 requires = ["hatchling"]

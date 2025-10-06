@@ -5,7 +5,7 @@
 @Time    : 2024-01-22 14:06:05
 @Author  : Rey
 @Contact : reyxbo@163.com
-@Explain : Weibo methods.
+@Explain : Weibo Web fetch methods.
 """
 
 
@@ -16,13 +16,13 @@ from reykit.rtime import now
 
 
 __all__ = (
-    'get_weibo_hot_search',
+    'crawl_weibo_hot_search',
 )
 
 
-def get_weibo_hot_search() -> list[dict[Literal['rank', 'time', 'title', 'type', 'hot', 'url'], Any]]:
+def crawl_weibo_hot_search() -> list[dict[Literal['rank', 'time', 'title', 'type', 'hot', 'url'], Any]]:
     """
-    Get hot search table from `weibo` website.
+    Crawl Weibo Web hot search table.
 
     Returns
     -------

@@ -5,7 +5,7 @@
 @Time    : 2024-01-22 14:06:05
 @Author  : Rey
 @Contact : reyxbo@163.com
-@Explain : Sina methods.
+@Explain : Sina Web fetch methods.
 """
 
 
@@ -17,8 +17,8 @@ from reykit.rtime import now
 
 
 __all__ = (
-    'search_sina_market',
-    'get_sina_stock_info'
+    'crawl_sina_search_market',
+    'crawl_sina_stock_info'
 )
 
 
@@ -43,9 +43,9 @@ SinaStockInfo = TypedDict(
 )
 
 
-def search_sina_market(keyword: str) -> list[dict[Literal['code', 'name', 'type', 'url'], str]]:
+def crawl_sina_search_market(keyword: str) -> list[dict[Literal['code', 'name', 'type', 'url'], str]]:
     """
-    Search products from market from `sina` website.
+    Crawl Sina Web and search market product table.
 
     Parameters
     ----------
@@ -116,9 +116,9 @@ def search_sina_market(keyword: str) -> list[dict[Literal['code', 'name', 'type'
     return table
 
 
-def get_sina_stock_info(code: str | list[str]) -> list[SinaStockInfo]:
+def crawl_sina_stock_info(code: str | list[str]) -> list[SinaStockInfo]:
     """
-    Get stock information table from `sina` website.
+    Crawl Sina Web stock information.
 
     Parameters
     ----------
