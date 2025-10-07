@@ -21,7 +21,7 @@ from .rbase import FetchCrawl
 
 
 __all__ = (
-    'DatabaseTableDoubanMedia',
+    'DatabaseORMTableDoubanMedia',
     'FetchCrawlDouban'
 )
 
@@ -72,9 +72,9 @@ MediaInfo = TypedDict(
 )
 
 
-class DatabaseTableDoubanMedia(rorm.Model, table=True):
+class DatabaseORMTableDoubanMedia(rorm.Model, table=True):
     """
-    Database `douban_media` table model.
+    Database `douban_media` table ORM model.
     """
 
     __name__ = 'douban_media'
@@ -125,6 +125,10 @@ class FetchCrawlDouban(FetchCrawl):
 
         # Build.
         self.db = db
+
+        # Build Database.
+        if self.db is not None:
+            self.build_db()
 
 
     def crawl_table(self) -> MediaTable:
@@ -474,7 +478,7 @@ class FetchCrawlDouban(FetchCrawl):
         database = self.db.database
 
         ## Table.
-        tables = [DatabaseTableDoubanMedia]
+        tables = [DatabaseORMTableDoubanMedia]
 
         ## View stats.
         views_stats = [

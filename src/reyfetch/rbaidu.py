@@ -24,7 +24,7 @@ from .rbase import FetchRequest, FetchRequestWithDatabase, FetchRequestDatabaseR
 
 
 __all__ = (
-    'DatabaseTableBaiduTrans',
+    'DatabaseORMTableBaiduTrans',
     'FetchRequestBaidu',
     'FetchRequestBaiduTranslateLangEnum',
     'FetchRequestBaiduTranslateLangAutoEnum',
@@ -37,9 +37,9 @@ FanyiResponseResult = TypedDict('FanyiResponseResult', {'src': str, 'dst': str})
 FanyiResponse = TypedDict('FanyiResponse', {'from': str, 'to': str, 'trans_result': list[FanyiResponseResult]})
 
 
-class DatabaseTableBaiduTrans(rorm.Model, table=True):
+class DatabaseORMTableBaiduTrans(rorm.Model, table=True):
     """
-    Database `baidu_trans` table model.
+    Database `baidu_trans` table ORM model.
     """
 
     __name__ = 'baidu_trans'
@@ -106,17 +106,12 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
     """
     Request Baidu translate API fetch type.
     Can create database used `self.build_db` method.
-
-    Attributes
-    ----------
-    url_api : API request URL.
-    url_doc : API document URL.
-    LangEnum : Baidu Fanyi APT language enumeration type.
-    LangEnum : Baidu Fanyi APT language auto type enumeration.
     """
 
     url_api = 'http://api.fanyi.baidu.com/api/trans/vip/translate'
+    'API request URL.'
     url_doc = 'https://fanyi-api.baidu.com/product/113'
+    'API document URL.'
     LangEnum = FetchRequestBaiduTranslateLangEnum
     LangAutoEnum = FetchRequestBaiduTranslateLangAutoEnum
 
@@ -147,6 +142,10 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
 
         # Database.
         self.db_record = FetchRequestDatabaseRecord(self, 'baidu_trans')
+
+        ## Build Database.
+        if self.db is not None:
+            self.build_db()
 
 
     def sign(self, text: str, num: int) -> str:
@@ -337,7 +336,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
         database = self.db.database
 
         ## Table.
-        tables = [DatabaseTableBaiduTrans]
+        tables = [DatabaseORMTableBaiduTrans]
 
         ## View stats.
         views_stats = [

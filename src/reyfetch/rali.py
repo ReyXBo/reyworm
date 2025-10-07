@@ -22,7 +22,7 @@ from .rbase import FetchRequest, FetchRequestWithDatabase, FetchRequestDatabaseR
 
 
 __all__ = (
-    'DatabaseTableAliQwen',
+    'DatabaseORMTableAliQwen',
     'FetchRequestAli',
     'FetchRequestAliQwen'
 )
@@ -55,9 +55,9 @@ ChatReplyGenerator = Generator[str, Any, None]
 ChatThinkGenerator = Generator[str, Any, None]
 
 
-class DatabaseTableAliQwen(rorm.Model, table=True):
+class DatabaseORMTableAliQwen(rorm.Model, table=True):
     """
-    Database `ali_qwen` table model.
+    Database `ali_qwen` table ORM model.
     """
 
     __name__ = 'ali_qwen'
@@ -86,17 +86,14 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
     """
     Request Ali QWen API fetch type.
     Can create database used `self.build_db` method.
-
-    Attributes
-    ----------
-    url_api : API request URL.
-    url_doc : API document URL.
-    model = API AI model type.
     """
 
     url_api = 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation'
+    'API request URL.'
     url_doc = 'https://help.aliyun.com/zh/model-studio/use-qwen-by-calling-api?spm=a2c4g.11186623.0.0.330e7d9dSBCaZQ'
+    'API document URL.'
     model = 'qwen-turbo-latest'
+    'API AI model type.'
 
 
     def __init__(
@@ -137,6 +134,10 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
 
         # Database.
         self.db_record = FetchRequestDatabaseRecord(self, 'ali_qwen')
+
+        ## Build Database.
+        if self.db is not None:
+            self.build_db()
 
 
     @overload
@@ -838,7 +839,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
         database = self.db.database
 
         ## Table.
-        tables = [DatabaseTableAliQwen]
+        tables = [DatabaseORMTableAliQwen]
 
         ## View stats.
         views_stats = [
