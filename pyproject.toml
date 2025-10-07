@@ -1,6 +1,6 @@
 [project]
 name = "reyfetch"
-version = "1.0.37"
+version = "1.0.38"
 description = "Web data fetch method set."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -11,6 +11,7 @@ authors = [
 ]
 dependencies = [
     "fake_useragent",
+    "reydb",
     "reykit",
     "selenium"
 ]
