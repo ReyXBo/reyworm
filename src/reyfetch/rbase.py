@@ -13,7 +13,7 @@ from typing import Any, Literal
 from types import MethodType
 from threading import get_ident as threading_get_ident
 from selenium.webdriver import Edge, Chrome, EdgeOptions, ChromeOptions
-from reydb.rdb import Database
+from reydb import Database
 from reykit.rbase import Base
 from reykit.rnet import join_url
 

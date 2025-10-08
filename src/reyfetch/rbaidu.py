@@ -11,8 +11,7 @@
 
 from typing import TypedDict
 from enum import StrEnum
-from reydb import rorm
-from reydb.rdb import Database
+from reydb import rorm, Database
 from reykit.rbase import throw
 from reykit.rnet import request as reykit_request
 from reykit.ros import get_md5

@@ -11,8 +11,7 @@
 
 from typing import TypedDict
 from bs4 import BeautifulSoup
-from reydb import rorm
-from reydb.rdb import Database
+from reydb import rorm, Database
 from reykit.rbase import throw
 from reykit.rnet import request
 from reykit.rre import search, findall, sub

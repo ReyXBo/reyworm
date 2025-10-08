@@ -12,8 +12,7 @@
 from typing import Any, TypedDict, NotRequired, Literal, overload, NoReturn
 from collections.abc import Hashable, Iterable, Generator
 from json import loads as json_loads
-from reydb import rorm
-from reydb.rdb import Database
+from reydb import rorm, Database
 from reykit.rbase import throw
 from reykit.rnet import request as reykit_request
 from reykit.rtime import now
