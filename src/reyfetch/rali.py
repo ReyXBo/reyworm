@@ -363,7 +363,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
         chat_record_reply = self.extract_response_record(response_json_first)
         is_think_emptied = not bool(chat_record_reply['think'])
 
-        ### Define.
+
         def _generator(mode: Literal['text', 'think']) -> Generator[str, Any, None]:
             """
             Generator function of stream response.
