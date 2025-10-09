@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-@Time    : 2024-01-11 21:56:56
+@Time    : 2024-01-11
 @Author  : Rey
 @Contact : reyxbo@163.com
 @Explain : Baidu Web fetch methods.
@@ -11,7 +11,7 @@
 
 from typing import TypedDict
 from enum import StrEnum
-from reydb import rorm, Database
+from reydb import rorm, DatabaseEngine
 from reykit.rbase import throw
 from reykit.rnet import request as reykit_request
 from reykit.ros import get_md5
@@ -119,7 +119,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
         self,
         appid: str,
         appkey: str,
-        db: Database | None = None,
+        db_engine: DatabaseEngine | None = None,
         max_len: int = 6000
     ) -> None:
         """
@@ -136,14 +136,14 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
         # Build.
         self.appid = appid
         self.appkey = appkey
-        self.db = db
+        self.db_engine = db_engine
         self.max_len = max_len
 
         # Database.
         self.db_record = FetchRequestDatabaseRecord(self, 'baidu_trans')
 
         ## Build Database.
-        if self.db is not None:
+        if self.db_engine is not None:
             self.build_db()
 
 
@@ -328,11 +328,11 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
         """
 
         # Check.
-        if self.db is None:
-            throw(ValueError, self.db)
+        if self.db_engine is None:
+            throw(ValueError, self.db_engine)
 
         # Parameter.
-        database = self.db.database
+        database = self.db_engine.database
 
         ## Table.
         tables = [DatabaseORMTableBaiduTrans]
@@ -422,7 +422,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
         ]
 
         # Build.
-        self.db.build.build(tables=tables, views_stats=views_stats, skip=True)
+        self.db_engine.build.build(tables=tables, views_stats=views_stats, skip=True)
 
 
     __call__ = trans

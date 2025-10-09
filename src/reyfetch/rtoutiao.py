@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-@Time    : 2024-01-22 14:06:05
+@Time    : 2024-01-22
 @Author  : Rey
 @Contact : reyxbo@163.com
 @Explain : Toutiao Web fetch methods.

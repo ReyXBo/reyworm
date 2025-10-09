@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-@Time    : 2025-07-17 22:32:37
+@Time    : 2025-07-17
 @Author  : Rey
 @Contact : reyxbo@163.com
 @Explain : Ali Web fetch methods.
@@ -12,7 +12,7 @@
 from typing import Any, TypedDict, NotRequired, Literal, overload, NoReturn
 from collections.abc import Hashable, Iterable, Generator
 from json import loads as json_loads
-from reydb import rorm, Database
+from reydb import rorm, DatabaseEngine
 from reykit.rbase import throw
 from reykit.rnet import request as reykit_request
 from reykit.rtime import now
@@ -98,7 +98,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
     def __init__(
         self,
         key: str,
-        db: Database | None = None,
+        db_engine: DatabaseEngine | None = None,
         system: str | None = None,
         rand: float = 0.5,
         history_max_char: int | None = None,
@@ -110,7 +110,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
         Parameters
         ----------
         key : API key.
-        db : `Database` instance, insert request record to table.
+        db_engine: Database engine, insert request record to table.
         system : AI system description.
         rand : AI reply randomness, value range is `[0,1]`.
         history_max_char : History messages record maximum character count.
@@ -124,7 +124,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
         # Build.
         self.key = key
         self.auth = 'Bearer ' + key
-        self.db = db
+        self.db_engine = db_engine
         self.system = system
         self.rand = rand
         self.history_max_char = history_max_char
@@ -135,7 +135,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
         self.db_record = FetchRequestDatabaseRecord(self, 'ali_qwen')
 
         ## Build Database.
-        if self.db is not None:
+        if self.db_engine is not None:
             self.build_db()
 
 
@@ -831,11 +831,11 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
         """
 
         # Check.
-        if self.db is None:
-            throw(ValueError, self.db)
+        if self.db_engine is None:
+            throw(ValueError, self.db_engine)
 
         # Parameter.
-        database = self.db.database
+        database = self.db_engine.database
 
         ## Table.
         tables = [DatabaseORMTableAliQwen]
@@ -957,7 +957,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
         ]
 
         # Build.
-        self.db.build.build(tables=tables, views_stats=views_stats, skip=True)
+        self.db_engine.build.build(tables=tables, views_stats=views_stats, skip=True)
 
 
     def insert_db(self, record: ChatRecord) -> None:

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-@Time    : 2025-08-25 15:37:50
+@Time    : 2025-08-25
 @Author  : Rey
 @Contact : reyxbo@163.com
 @Explain : Douban Web fetch methods.
@@ -11,7 +11,7 @@
 
 from typing import TypedDict
 from bs4 import BeautifulSoup
-from reydb import rorm, Database
+from reydb import rorm, DatabaseEngine
 from reykit.rbase import throw
 from reykit.rnet import request
 from reykit.rre import search, findall, sub
@@ -111,22 +111,22 @@ class FetchCrawlDouban(FetchCrawl):
     """
 
 
-    def __init__(self, db: Database | None = None) -> None:
+    def __init__(self, db_engine: DatabaseEngine | None = None) -> None:
         """
         Build instance attributes.
 
         Parameters
         ----------
-        db : `Database` instance.
+        db_engine : Database engine.
             - `None`: Not use database.
             - `Database`: Automatic record to database.
         """
 
         # Build.
-        self.db = db
+        self.db_engine = db_engine
 
         # Build Database.
-        if self.db is not None:
+        if self.db_engine is not None:
             self.build_db()
 
 
@@ -242,7 +242,7 @@ class FetchCrawlDouban(FetchCrawl):
         table = list(table_dict.values())
 
         # Database.
-        if self.db is not None:
+        if self.db_engine is not None:
             update_fields = (
                 'id',
                 'type',
@@ -255,7 +255,7 @@ class FetchCrawlDouban(FetchCrawl):
                 'episode_now',
                 'year'
             )
-            self.db.execute.insert(
+            self.db_engine.execute.insert(
                 'douban_media',
                 table,
                 update_fields
@@ -424,10 +424,10 @@ class FetchCrawlDouban(FetchCrawl):
             infos['video'] = url.replace('#content', '', 1)
 
         # Database.
-        if self.db is not None:
+        if self.db_engine is not None:
             data = {'id': id_}
             data.update(infos)
-            self.db.execute.insert(
+            self.db_engine.execute.insert(
                 'douban_media',
                 data,
                 'update'
@@ -470,11 +470,11 @@ class FetchCrawlDouban(FetchCrawl):
         """
 
         # Check.
-        if self.db is None:
-            throw(ValueError, self.db)
+        if self.db_engine is None:
+            throw(ValueError, self.db_engine)
 
         # Parameter.
-        database = self.db.database
+        database = self.db_engine.database
 
         ## Table.
         tables = [DatabaseORMTableDoubanMedia]
@@ -556,4 +556,4 @@ class FetchCrawlDouban(FetchCrawl):
         ]
 
         # Build.
-        self.db.build.build(tables=tables, views_stats=views_stats, skip=True)
+        self.db_engine.build.build(tables=tables, views_stats=views_stats, skip=True)

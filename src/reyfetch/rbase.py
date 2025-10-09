@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-@Time    : 2023-12-29 23:14:18
+@Time    : 2023-12-29
 @Author  : Rey
 @Contact : reyxbo@163.com
 @Explain : Base methods.
@@ -165,7 +165,7 @@ class FetchRequestWithDatabase(FetchRequest):
     Can create database used `self.build_db` method.
     """
 
-    db: Database | None
+    db_engine: Database | None
     build_db: MethodType
 
 
@@ -207,7 +207,7 @@ class FetchRequestDatabaseRecord(FetchRequest):
         """
 
         # Check.
-        if self.api.db is None:
+        if self.api.db_engine is None:
             return
 
         # Parameter.
@@ -224,7 +224,7 @@ class FetchRequestDatabaseRecord(FetchRequest):
         """
 
         # Check.
-        if self.api.db is None:
+        if self.api.db_engine is None:
             return
 
         # Parameter.
@@ -232,7 +232,7 @@ class FetchRequestDatabaseRecord(FetchRequest):
         record = self.data.setdefault(thread_id, {})
 
         # Insert.
-        self.api.db.execute.insert(self.table, record)
+        self.api.db_engine.execute.insert(self.table, record)
 
         # Delete.
         del self.data[thread_id]
