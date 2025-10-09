@@ -105,7 +105,7 @@ class FetchBrowser(FetchBase):
 
         # Parameter.
         params = params or {}
-        url = join_url(url, params)
+        url = join_url(url, **params)
 
         # Request.
         self.driver.get(url)

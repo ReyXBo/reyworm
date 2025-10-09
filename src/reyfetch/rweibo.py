@@ -67,7 +67,7 @@ def crawl_weibo_hot_search() -> list[dict[Literal['rank', 'time', 'title', 'type
             'hot': info['num'],
             'url': join_url(
                 'https://s.weibo.com/weibo',
-                {'q': '#%s#' % info['word']}
+                q=f'#{info['word']}#'
             )
         }
         for info in table
