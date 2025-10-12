@@ -54,7 +54,7 @@ ChatReplyGenerator = Generator[str, Any, None]
 ChatThinkGenerator = Generator[str, Any, None]
 
 
-class DatabaseORMTableAliQwen(rorm.Model, table=True):
+class DatabaseORMTableAliQwen(rorm.Table):
     """
     Database `ali_qwen` table ORM model.
     """

@@ -71,7 +71,7 @@ MediaInfo = TypedDict(
 )
 
 
-class DatabaseORMTableDoubanMedia(rorm.Model, table=True):
+class DatabaseORMTableDoubanMedia(rorm.Table):
     """
     Database `douban_media` table ORM model.
     """

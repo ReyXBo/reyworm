@@ -36,7 +36,7 @@ FanyiResponseResult = TypedDict('FanyiResponseResult', {'src': str, 'dst': str})
 FanyiResponse = TypedDict('FanyiResponse', {'from': str, 'to': str, 'trans_result': list[FanyiResponseResult]})
 
 
-class DatabaseORMTableBaiduTrans(rorm.Model, table=True):
+class DatabaseORMTableBaiduTrans(rorm.Table):
     """
     Database `baidu_trans` table ORM model.
     """
