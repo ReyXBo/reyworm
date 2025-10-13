@@ -93,7 +93,7 @@ class DatabaseORMTableDoubanMedia(rorm.Table):
     episode_now: int = rorm.Field(rorm.types_mysql.SMALLINT(unsigned=True), comment='TV drama current episode number.')
     premiere: str = rorm.Field(rorm.types.JSON, comment='Premiere region and date dictionary.')
     country: str = rorm.Field(rorm.types.JSON, comment='Release country list.')
-    class_: str = rorm.Field(rorm.types.JSON, comment='Class list.', arg_name='class', filed_name='class')
+    class_: str = rorm.Field(rorm.types.JSON, comment='Class list.', name='class')
     director: str = rorm.Field(rorm.types.JSON, comment='Director list.')
     scriptwriter: str = rorm.Field(rorm.types.JSON, comment='Scriptwriter list.')
     language: str = rorm.Field(rorm.types.JSON, comment='Language list.')
