@@ -12,6 +12,7 @@
 from typing import Any, Literal
 from types import MethodType
 from threading import get_ident as threading_get_ident
+from fake_useragent import UserAgent
 from selenium.webdriver import Edge, Chrome, EdgeOptions, ChromeOptions
 from reydb import Database
 from reykit.rbase import Base
@@ -45,6 +46,8 @@ class FetchCrawl(FetchBase):
     """
     Crawl Web fetch type.
     """
+
+    ua = UserAgent()
 
 
 class FetchBrowser(FetchBase):
