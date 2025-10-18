@@ -1,6 +1,6 @@
 [project]
 name = "reyfetch"
-version = "1.0.46"
+version = "1.0.47"
 description = "Web data fetch method set."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -10,6 +10,7 @@ authors = [
     {name = "Rey", email = "reyxbo@163.com"}
 ]
 dependencies = [
+    "bs4",
     "fake_useragent",
     "reydb",
     "reykit",

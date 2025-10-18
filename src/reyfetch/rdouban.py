@@ -131,6 +131,101 @@ class FetchCrawlDouban(FetchCrawl):
             self.build_db()
 
 
+    def build_db(self) -> None:
+        """
+        Check and build database tables.
+        """
+
+        # Check.
+        if self.db_engine is None:
+            throw(ValueError, self.db_engine)
+
+        # Parameter.
+        database = self.db_engine.database
+
+        ## Table.
+        tables = [DatabaseORMTableDoubanMedia]
+
+        ## View stats.
+        views_stats = [
+            {
+                'path': 'stats_douban',
+                'items': [
+                    {
+                        'name': 'count',
+                        'select': (
+                            'SELECT COUNT(1)\n'
+                            f'FROM `{database}`.`douban_media`'
+                        ),
+                        'comment': 'Media count.'
+                    },
+                    {
+                        'name': 'past_day_count',
+                        'select': (
+                            'SELECT COUNT(1)\n'
+                            f'FROM `{database}`.`douban_media`\n'
+                            'WHERE TIMESTAMPDIFF(DAY, `create_time`, NOW()) = 0'
+                        ),
+                        'comment': 'Media count in the past day.'
+                    },
+                    {
+                        'name': 'past_week_count',
+                        'select': (
+                            'SELECT COUNT(1)\n'
+                            f'FROM `{database}`.`douban_media`\n'
+                            'WHERE TIMESTAMPDIFF(DAY, `create_time`, NOW()) <= 6'
+                        ),
+                        'comment': 'Media count in the past week.'
+                    },
+                    {
+                        'name': 'past_month_count',
+                        'select': (
+                            'SELECT COUNT(1)\n'
+                            f'FROM `{database}`.`douban_media`\n'
+                            'WHERE TIMESTAMPDIFF(DAY, `create_time`, NOW()) <= 29'
+                        ),
+                        'comment': 'Media count in the past month.'
+                    },
+                    {
+                        'name': 'avg_score',
+                        'select': (
+                            'SELECT ROUND(AVG(`score`), 1)\n'
+                            f'FROM `{database}`.`douban_media`'
+                        ),
+                        'comment': 'Media average score.'
+                    },
+                    {
+                        'name': 'score_count',
+                        'select': (
+                            'SELECT FORMAT(SUM(`score_count`), 0)\n'
+                            f'FROM `{database}`.`douban_media`'
+                        ),
+                        'comment': 'Media score count.'
+                    },
+                    {
+                        'name': 'last_create_time',
+                        'select': (
+                            'SELECT MAX(`create_time`)\n'
+                            f'FROM `{database}`.`douban_media`'
+                        ),
+                        'comment': 'Media last record create time.'
+                    },
+                    {
+                        'name': 'last_update_time',
+                        'select': (
+                            'SELECT IFNULL(MAX(`update_time`), MAX(`create_time`))\n'
+                            f'FROM `{database}`.`douban_media`'
+                        ),
+                        'comment': 'Media last record update time.'
+                    }
+                ]
+            }
+        ]
+
+        # Build.
+        self.db_engine.build.build(tables=tables, views_stats=views_stats, skip=True)
+
+
     def crawl_table(self) -> MediaTable:
         """
         Crawl media table.
@@ -235,6 +330,13 @@ class FetchCrawlDouban(FetchCrawl):
                 row['class'] = classes.split()
                 row['director'] = directors and directors.split()
                 row['star'] = stars and stars.split()
+
+                ### Empty.
+                row = {
+                    key: value
+                    for key, value in row.items()
+                    if value
+                }
 
                 ### Add.
                 table_dict[id_] = row
@@ -424,6 +526,13 @@ class FetchCrawlDouban(FetchCrawl):
             url = element.attrs['href']
             infos['video'] = url.replace('#content', '', 1)
 
+        ## Empty.
+        infos = {
+            key: value
+            for key, value in infos.items()
+            if value
+        }
+
         # Database.
         if self.db_engine is not None:
             data = {'id': id_}
@@ -463,98 +572,3 @@ class FetchCrawlDouban(FetchCrawl):
             throw(AssertionError, result, url)
 
         return result
-
-
-    def build_db(self) -> None:
-        """
-        Check and build database tables.
-        """
-
-        # Check.
-        if self.db_engine is None:
-            throw(ValueError, self.db_engine)
-
-        # Parameter.
-        database = self.db_engine.database
-
-        ## Table.
-        tables = [DatabaseORMTableDoubanMedia]
-
-        ## View stats.
-        views_stats = [
-            {
-                'path': 'stats_douban',
-                'items': [
-                    {
-                        'name': 'count',
-                        'select': (
-                            'SELECT COUNT(1)\n'
-                            f'FROM `{database}`.`douban_media`'
-                        ),
-                        'comment': 'Media count.'
-                    },
-                    {
-                        'name': 'past_day_count',
-                        'select': (
-                            'SELECT COUNT(1)\n'
-                            f'FROM `{database}`.`douban_media`\n'
-                            'WHERE TIMESTAMPDIFF(DAY, `create_time`, NOW()) = 0'
-                        ),
-                        'comment': 'Media count in the past day.'
-                    },
-                    {
-                        'name': 'past_week_count',
-                        'select': (
-                            'SELECT COUNT(1)\n'
-                            f'FROM `{database}`.`douban_media`\n'
-                            'WHERE TIMESTAMPDIFF(DAY, `create_time`, NOW()) <= 6'
-                        ),
-                        'comment': 'Media count in the past week.'
-                    },
-                    {
-                        'name': 'past_month_count',
-                        'select': (
-                            'SELECT COUNT(1)\n'
-                            f'FROM `{database}`.`douban_media`\n'
-                            'WHERE TIMESTAMPDIFF(DAY, `create_time`, NOW()) <= 29'
-                        ),
-                        'comment': 'Media count in the past month.'
-                    },
-                    {
-                        'name': 'avg_score',
-                        'select': (
-                            'SELECT ROUND(AVG(`score`), 1)\n'
-                            f'FROM `{database}`.`douban_media`'
-                        ),
-                        'comment': 'Media average score.'
-                    },
-                    {
-                        'name': 'score_count',
-                        'select': (
-                            'SELECT FORMAT(SUM(`score_count`), 0)\n'
-                            f'FROM `{database}`.`douban_media`'
-                        ),
-                        'comment': 'Media score count.'
-                    },
-                    {
-                        'name': 'last_create_time',
-                        'select': (
-                            'SELECT MAX(`create_time`)\n'
-                            f'FROM `{database}`.`douban_media`'
-                        ),
-                        'comment': 'Media last record create time.'
-                    },
-                    {
-                        'name': 'last_update_time',
-                        'select': (
-                            'SELECT IFNULL(MAX(`update_time`), MAX(`create_time`))\n'
-                            f'FROM `{database}`.`douban_media`'
-                        ),
-                        'comment': 'Media last record update time.'
-                    }
-                ]
-            }
-        ]
-
-        # Build.
-        self.db_engine.build.build(tables=tables, views_stats=views_stats, skip=True)
