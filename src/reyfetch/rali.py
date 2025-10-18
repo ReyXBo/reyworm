@@ -67,7 +67,7 @@ class DatabaseORMTableAliQwen(rorm.Table):
     messages: str = rorm.Field(rorm.types.JSON, not_null=True, comment='Input messages data.')
     reply: str = rorm.Field(rorm.types.TEXT, not_null=True, comment='Output reply text.')
     think: str = rorm.Field(rorm.types.TEXT, comment='Output deep think text.')
-    web: str = rorm.Field(rorm.types.JSON, not_null=True, comment='Web search data.')
+    web: str = rorm.Field(rorm.types.JSON, comment='Web search data.')
     token_total: int = rorm.Field(rorm.types_mysql.MEDIUMINT(unsigned=True), not_null=True, comment='Usage total Token.')
     token_input: int = rorm.Field(rorm.types_mysql.MEDIUMINT(unsigned=True), not_null=True, comment='Usage input Token.')
     token_output: int = rorm.Field(rorm.types_mysql.MEDIUMINT(unsigned=True), not_null=True, comment='Usage output Token.')
