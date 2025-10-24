@@ -138,8 +138,13 @@ class FetchCrawlBrowser(FetchCrawl):
         Loop crawl by database table.
         """
 
+        # Echo.
+        if self.echo:
+            print('Start loop crawl by database table.')
+
         # Loop.
         while True:
+
 
             ## Crawl.
             self.__crawl_by_db()
