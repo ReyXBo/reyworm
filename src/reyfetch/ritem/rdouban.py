@@ -16,7 +16,7 @@ from reykit.rbase import throw
 from reykit.rnet import request
 from reykit.rre import search, findall, sub
 
-from .rbase import FetchCrawl
+from ..rbase import FetchCrawl
 
 
 __all__ = (

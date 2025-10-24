@@ -5,7 +5,7 @@
 @Time    : 2024-01-10
 @Author  : Rey
 @Contact : reyxbo@163.com
-@Explain : General methods.
+@Explain : General fetch methods.
 """
 
 
@@ -19,7 +19,6 @@ __all__ = (
     'crawl_calendar',
     'crawl_lunar_calendar'
 )
-
 
 def crawl_calendar(
     year: int | None = None,

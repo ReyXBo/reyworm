@@ -17,7 +17,7 @@ from reykit.rbase import throw
 from reykit.rnet import request as reykit_request
 from reykit.rtime import now
 
-from .rbase import FetchRequest, FetchRequestWithDatabase, FetchRequestDatabaseRecord
+from ..rbase import FetchRequest, FetchRequestWithDatabase, FetchRequestDatabaseRecord
 
 
 __all__ = (

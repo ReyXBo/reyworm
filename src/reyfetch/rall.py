@@ -9,11 +9,6 @@
 """
 
 
-from .rali import *
-from .rbaidu import *
+from .ritem import *
 from .rbase import *
-from .rdouban import *
-from .rgeneral import *
-from .rsina import *
-from .rtoutiao import *
-from .rweibo import *
+from .rbrowser import *

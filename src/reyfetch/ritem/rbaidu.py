@@ -19,7 +19,7 @@ from reykit.rrand import randn
 from reykit.rtext import is_zh
 from reykit.rtime import now
 
-from .rbase import FetchRequest, FetchRequestWithDatabase, FetchRequestDatabaseRecord
+from ..rbase import FetchRequest, FetchRequestWithDatabase, FetchRequestDatabaseRecord
 
 
 __all__ = (
