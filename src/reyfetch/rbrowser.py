@@ -39,11 +39,11 @@ class DatabaseORMTableCrawlBrowserPage(rorm.Table):
     __comment__ = 'Crawl browser page HTML text table.'
     create_time: rorm.Datetime = rorm.Field(field_default=':create_time', not_null=True, index_n=True, comment='Record create time.')
     update_time: rorm.Datetime = rorm.Field(field_default=':update_time', index_n=True, comment='Record update time.')
-    id: int = rorm.Field(rorm.types_mysql.INTEGER(unsigned=True), key_auto=True, comment='ID.')
+    id: int = rorm.Field(rorm.types.INTEGER, key_auto=True, comment='ID.')
     url: str = rorm.Field(rorm.types.VARCHAR(8182), not_null=True, comment='Target URL.')
-    html: str = rorm.Field(rorm.types_mysql.MEDIUMTEXT, comment='Crawled HTML text.')
+    html: str = rorm.Field(rorm.types.TEXT, comment='Crawled HTML text.')
     status: int = rorm.Field(
-        field_type=rorm.types_mysql.TINYINT(unsigned=True),
+        field_type=rorm.types.SMALLINT,
         field_default='0',
         not_null=True,
         comment=(
@@ -283,11 +283,14 @@ def add_db_crawl_task(
 
     # Inesrt.
     data = {'url': url, 'note': note}
-    with db_engine.connect() as conn:
-        conn.execute.insert('crawl_browser_page', data)
-        insert_id = conn.insert_id()
+    result = db_engine.execute.insert(
+        'crawl_browser_page',
+        data,
+        return_field='id'
+    )
+    record_id: int = result.scalar()
 
-    return insert_id
+    return record_id
 
 
 def wait_db_crawl_task(

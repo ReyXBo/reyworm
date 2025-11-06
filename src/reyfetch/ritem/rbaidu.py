@@ -38,12 +38,12 @@ FanyiResponse = TypedDict('FanyiResponse', {'from': str, 'to': str, 'trans_resul
 
 class DatabaseORMTableBaiduTrans(rorm.Table):
     """
-    Database `baidu_trans` table ORM model.
+    Database "baidu_trans" table ORM model.
     """
 
     __name__ = 'baidu_trans'
     __comment__ = 'Baidu API translate request record table.'
-    id: int = rorm.Field(rorm.types_mysql.INTEGER(unsigned=True), key_auto=True, comment='ID.')
+    id: int = rorm.Field(rorm.types.INTEGER, key_auto=True, comment='ID.')
     request_time: rorm.Datetime = rorm.Field(not_null=True, comment='Request time.')
     response_time: rorm.Datetime = rorm.Field(not_null=True, comment='Response time.')
     input: str = rorm.Field(rorm.types.VARCHAR(6000), not_null=True, comment='Input original text.')
@@ -104,7 +104,7 @@ class FetchRequestBaiduTranslateLangAutoEnum(FetchRequestBaidu, StrEnum):
 class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
     """
     Request Baidu translate API fetch type.
-    Can create database used `self.build_db` method.
+    Can create database used "self.build_db" method.
     """
 
     url_api = 'http://api.fanyi.baidu.com/api/trans/vip/translate'
@@ -129,7 +129,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
         ----------
         appid : APP ID.
         appkey : APP key.
-        db : `Database` instance, insert request record to table.
+        db : "Database" instance, insert request record to table.
         max_len : Maximun length.
         """
 
@@ -271,12 +271,12 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
         Parameters
         ----------
         text : Text.
-            - `self.is_auth is True`: Maximum length is 6000.
-            - `self.is_auth is False`: Maximum length is 3000.
+            - "self.is_auth is True": Maximum length is 6000.
+            - "self.is_auth is False": Maximum length is 3000.
         from_lang : Source language.
-            - `None`: Automatic judgment.
+            - "None": Automatic judgment.
         to_lang : Target language.
-            - `None`: Automatic judgment.
+            - "None": Automatic judgment.
 
         Returns
         -------
@@ -332,7 +332,6 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
             throw(ValueError, self.db_engine)
 
         # Parameter.
-        database = self.db_engine.database
 
         ## Table.
         tables = [DatabaseORMTableBaiduTrans]
@@ -340,13 +339,13 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
         ## View stats.
         views_stats = [
             {
-                'path': 'stats_baidu_trans',
+                'table': 'stats_baidu_trans',
                 'items': [
                     {
                         'name': 'count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{database}`.`baidu_trans`'
+                            f'FROM "baidu_trans"'
                         ),
                         'comment': 'Request count.'
                     },
@@ -354,8 +353,8 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                         'name': 'past_day_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{database}`.`baidu_trans`'
-                            'WHERE TIMESTAMPDIFF(DAY, `request_time`, NOW()) = 0'
+                            f'FROM "baidu_trans"'
+                            'WHERE DATE_PART(\'day\', NOW() - "request_time") = 0'
                         ),
                         'comment': 'Request count in the past day.'
                     },
@@ -363,8 +362,8 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                         'name': 'past_week_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{database}`.`baidu_trans`'
-                            'WHERE TIMESTAMPDIFF(DAY, `request_time`, NOW()) <= 6'
+                            f'FROM "baidu_trans"'
+                            'WHERE DATE_PART(\'day\', NOW() - "request_time") <= 6'
                         ),
                         'comment': 'Request count in the past week.'
                     },
@@ -372,48 +371,48 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                         'name': 'past_month_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{database}`.`baidu_trans`'
-                            'WHERE TIMESTAMPDIFF(DAY, `request_time`, NOW()) <= 29'
+                            f'FROM "baidu_trans"'
+                            'WHERE DATE_PART(\'day\', NOW() - "request_time") <= 29'
                         ),
                         'comment': 'Request count in the past month.'
                     },
                     {
                         'name': 'total_input',
                         'select': (
-                            'SELECT FORMAT(SUM(LENGTH(`input`)), 0)\n'
-                            f'FROM `{database}`.`baidu_trans`'
+                            'SELECT FORMAT(SUM(LENGTH("input")), 0)\n'
+                            f'FROM "baidu_trans"'
                         ),
                         'comment': 'Input original text total character.'
                     },
                     {
                         'name': 'total_output',
                         'select': (
-                            'SELECT FORMAT(SUM(LENGTH(`output`)), 0)\n'
-                            f'FROM `{database}`.`baidu_trans`'
+                            'SELECT FORMAT(SUM(LENGTH("output")), 0)\n'
+                            f'FROM "baidu_trans"'
                         ),
                         'comment': 'Output translation text total character.'
                     },
                     {
                         'name': 'avg_input',
                         'select': (
-                            'SELECT FORMAT(AVG(LENGTH(`input`)), 0)\n'
-                            f'FROM `{database}`.`baidu_trans`'
+                            'SELECT FORMAT(AVG(LENGTH("input")), 0)\n'
+                            f'FROM "baidu_trans"'
                         ),
                         'comment': 'Input original text average character.'
                     },
                     {
                         'name': 'avg_output',
                         'select': (
-                            'SELECT FORMAT(AVG(LENGTH(`output`)), 0)\n'
-                            f'FROM `{database}`.`baidu_trans`'
+                            'SELECT FORMAT(AVG(LENGTH("output")), 0)\n'
+                            f'FROM "baidu_trans"'
                         ),
                         'comment': 'Output translation text average character.'
                     },
                     {
                         'name': 'last_time',
                         'select': (
-                            'SELECT MAX(`request_time`)\n'
-                            f'FROM `{database}`.`baidu_trans`'
+                            'SELECT MAX("request_time")\n'
+                            f'FROM "baidu_trans"'
                         ),
                         'comment': 'Last record request time.'
                     }

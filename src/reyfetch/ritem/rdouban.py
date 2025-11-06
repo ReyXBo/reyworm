@@ -73,24 +73,24 @@ MediaInfo = TypedDict(
 
 class DatabaseORMTableDoubanMedia(rorm.Table):
     """
-    Database `douban_media` table ORM model.
+    Database "douban_media" table ORM model.
     """
 
     __name__ = 'douban_media'
     __comment__ = 'Douban media information table.'
     create_time: rorm.Datetime = rorm.Field(field_default=':create_time', not_null=True, index_n=True, comment='Record create time.')
     update_time: rorm.Datetime = rorm.Field(field_default=':update_time', index_n=True, comment='Record update time.')
-    id: int = rorm.Field(rorm.types_mysql.INTEGER(unsigned=True), key=True, comment='Douban media ID.')
+    id: int = rorm.Field(rorm.types.INTEGER, key=True, comment='Douban media ID.')
     imdb: str = rorm.Field(rorm.types.CHAR(10), index_u=True, comment='IMDb ID.')
     type: str = rorm.Field(rorm.types.VARCHAR(5), not_null=True, comment='Media type.')
     name: str = rorm.Field(rorm.types.VARCHAR(200), not_null=True, index_n=True, comment='Media name.')
-    year: str = rorm.Field(rorm.types_mysql.YEAR, not_null=True, comment='Media content description.')
+    year: str = rorm.Field(rorm.types.SMALLINT, not_null=True, comment='Media content description.')
     desc: str = rorm.Field(rorm.types.VARCHAR(1000), comment='Media content description.')
     score: float = rorm.Field(rorm.types.FLOAT, comment='Media score, [0,10].')
-    score_count: int = rorm.Field(rorm.types_mysql.INTEGER(unsigned=True), comment='Media score count.')
-    minute: int = rorm.Field(rorm.types_mysql.SMALLINT(unsigned=True), comment='Movie or TV drama episode minute.')
-    episode: int = rorm.Field(rorm.types_mysql.SMALLINT(unsigned=True), comment='TV drama total episode number.')
-    episode_now: int = rorm.Field(rorm.types_mysql.SMALLINT(unsigned=True), comment='TV drama current episode number.')
+    score_count: int = rorm.Field(rorm.types.INTEGER, comment='Media score count.')
+    minute: int = rorm.Field(rorm.types.SMALLINT, comment='Movie or TV drama episode minute.')
+    episode: int = rorm.Field(rorm.types.SMALLINT, comment='TV drama total episode number.')
+    episode_now: int = rorm.Field(rorm.types.SMALLINT, comment='TV drama current episode number.')
     premiere: str = rorm.Field(rorm.types.JSON, comment='Premiere region and date dictionary.')
     country: str = rorm.Field(rorm.types.JSON, comment='Release country list.')
     class_: str = rorm.Field(rorm.types.JSON, comment='Class list.', name='class')
@@ -108,7 +108,7 @@ class DatabaseORMTableDoubanMedia(rorm.Table):
 class FetchCrawlDouban(FetchCrawl):
     """
     Crawl Douban Web fetch type.
-    Can create database used `self.build_db` method.
+    Can create database used "self.build_db" method.
     """
 
 
@@ -119,8 +119,8 @@ class FetchCrawlDouban(FetchCrawl):
         Parameters
         ----------
         db_engine : Database engine.
-            - `None`: Not use database.
-            - `Database`: Automatic record to database.
+            - "None": Not use database.
+            - "Database": Automatic record to database.
         """
 
         # Build.
@@ -141,7 +141,6 @@ class FetchCrawlDouban(FetchCrawl):
             throw(ValueError, self.db_engine)
 
         # Parameter.
-        database = self.db_engine.database
 
         ## Table.
         tables = [DatabaseORMTableDoubanMedia]
@@ -149,13 +148,13 @@ class FetchCrawlDouban(FetchCrawl):
         ## View stats.
         views_stats = [
             {
-                'path': 'stats_douban',
+                'table': 'stats_douban',
                 'items': [
                     {
                         'name': 'count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{database}`.`douban_media`'
+                            f'FROM "douban_media"'
                         ),
                         'comment': 'Media count.'
                     },
@@ -163,8 +162,8 @@ class FetchCrawlDouban(FetchCrawl):
                         'name': 'past_day_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{database}`.`douban_media`\n'
-                            'WHERE TIMESTAMPDIFF(DAY, `create_time`, NOW()) = 0'
+                            f'FROM "douban_media"\n'
+                            'WHERE DATE_PART(\'day\', NOW() - "create_time") = 0'
                         ),
                         'comment': 'Media count in the past day.'
                     },
@@ -172,8 +171,8 @@ class FetchCrawlDouban(FetchCrawl):
                         'name': 'past_week_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{database}`.`douban_media`\n'
-                            'WHERE TIMESTAMPDIFF(DAY, `create_time`, NOW()) <= 6'
+                            f'FROM "douban_media"\n'
+                            'WHERE DATE_PART(\'day\', NOW() - "create_time") <= 6'
                         ),
                         'comment': 'Media count in the past week.'
                     },
@@ -181,40 +180,40 @@ class FetchCrawlDouban(FetchCrawl):
                         'name': 'past_month_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM `{database}`.`douban_media`\n'
-                            'WHERE TIMESTAMPDIFF(DAY, `create_time`, NOW()) <= 29'
+                            f'FROM "douban_media"\n'
+                            'WHERE DATE_PART(\'day\', NOW() - "create_time") <= 29'
                         ),
                         'comment': 'Media count in the past month.'
                     },
                     {
                         'name': 'avg_score',
                         'select': (
-                            'SELECT ROUND(AVG(`score`), 1)\n'
-                            f'FROM `{database}`.`douban_media`'
+                            'SELECT ROUND(AVG("score"), 1)\n'
+                            f'FROM "douban_media"'
                         ),
                         'comment': 'Media average score.'
                     },
                     {
                         'name': 'score_count',
                         'select': (
-                            'SELECT FORMAT(SUM(`score_count`), 0)\n'
-                            f'FROM `{database}`.`douban_media`'
+                            'SELECT FORMAT(SUM("score_count"), 0)\n'
+                            f'FROM "douban_media"'
                         ),
                         'comment': 'Media score count.'
                     },
                     {
                         'name': 'last_create_time',
                         'select': (
-                            'SELECT MAX(`create_time`)\n'
-                            f'FROM `{database}`.`douban_media`'
+                            'SELECT MAX("create_time")\n'
+                            f'FROM "douban_media"'
                         ),
                         'comment': 'Media last record create time.'
                     },
                     {
                         'name': 'last_update_time',
                         'select': (
-                            'SELECT IFNULL(MAX(`update_time`), MAX(`create_time`))\n'
-                            f'FROM `{database}`.`douban_media`'
+                            'SELECT IFNULL(MAX("update_time"), MAX("create_time"))\n'
+                            f'FROM "douban_media"'
                         ),
                         'comment': 'Media last record update time.'
                     }
