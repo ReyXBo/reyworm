@@ -15,7 +15,7 @@ from selenium.webdriver import Edge, Chrome, EdgeOptions, ChromeOptions
 from reydb import rorm, DatabaseEngine
 from reykit.rbase import throw
 from reykit.rnet import join_url
-from reykit.rtime import TimeMark, sleep
+from reykit.rtime import TimeMark, now, sleep
 
 from .rbase import FetchCrawl
 
@@ -37,8 +37,8 @@ class DatabaseORMTableCrawlBrowserPage(rorm.Table):
 
     __name__ = 'crawl_browser_page'
     __comment__ = 'Crawl browser page HTML text table.'
-    create_time: rorm.Datetime = rorm.Field(field_default=':create_time', not_null=True, index_n=True, comment='Record create time.')
-    update_time: rorm.Datetime = rorm.Field(field_default=':update_time', index_n=True, comment='Record update time.')
+    create_time: rorm.Datetime = rorm.Field(field_default=':time', not_null=True, index_n=True, comment='Record create time.')
+    update_time: rorm.Datetime = rorm.Field(field_default=':time', arg_default=now, index_n=True, comment='Record update time.')
     id: int = rorm.Field(key_auto=True, comment='ID.')
     url: str = rorm.Field(rorm.types.VARCHAR(8182), not_null=True, comment='Target URL.')
     html: str = rorm.Field(rorm.types.TEXT, comment='Crawled HTML text.')
@@ -178,7 +178,12 @@ class FetchCrawlBrowser(FetchCrawl):
                 status = 1
 
             ## Database.
-            data = {'id': id_, 'html': self.page, 'status': status}
+            data = {
+                'update_time': ':NOW()',
+                'id': id_,
+                'html': self.page,
+                'status': status
+            }
             self.db_engine.execute.update('crawl_browser_page', data)
 
 

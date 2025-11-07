@@ -15,6 +15,7 @@ from reydb import rorm, DatabaseEngine
 from reykit.rbase import throw
 from reykit.rnet import request
 from reykit.rre import search, findall, sub
+from reykit.rtime import now
 
 from ..rbase import FetchCrawl
 
@@ -78,8 +79,8 @@ class DatabaseORMTableDoubanMedia(rorm.Table):
 
     __name__ = 'douban_media'
     __comment__ = 'Douban media information table.'
-    create_time: rorm.Datetime = rorm.Field(field_default=':create_time', not_null=True, index_n=True, comment='Record create time.')
-    update_time: rorm.Datetime = rorm.Field(field_default=':update_time', index_n=True, comment='Record update time.')
+    create_time: rorm.Datetime = rorm.Field(field_default=':time', not_null=True, index_n=True, comment='Record create time.')
+    update_time: rorm.Datetime = rorm.Field(field_default=':time', arg_default=now, index_n=True, comment='Record update time.')
     id: int = rorm.Field(key=True, comment='Douban media ID.')
     imdb: str = rorm.Field(rorm.types.CHAR(10), index_u=True, comment='IMDb ID.')
     type: str = rorm.Field(rorm.types.VARCHAR(5), not_null=True, comment='Media type.')
@@ -540,7 +541,8 @@ class FetchCrawlDouban(FetchCrawl):
                 'douban_media',
                 data,
                 'id',
-                'update'
+                'update',
+                update_time=':NOW()'
             )
 
         return infos
