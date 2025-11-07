@@ -39,7 +39,7 @@ class DatabaseORMTableCrawlBrowserPage(rorm.Table):
     __comment__ = 'Crawl browser page HTML text table.'
     create_time: rorm.Datetime = rorm.Field(field_default=':create_time', not_null=True, index_n=True, comment='Record create time.')
     update_time: rorm.Datetime = rorm.Field(field_default=':update_time', index_n=True, comment='Record update time.')
-    id: int = rorm.Field(rorm.types.INTEGER, key_auto=True, comment='ID.')
+    id: int = rorm.Field(key_auto=True, comment='ID.')
     url: str = rorm.Field(rorm.types.VARCHAR(8182), not_null=True, comment='Target URL.')
     html: str = rorm.Field(rorm.types.TEXT, comment='Crawled HTML text.')
     status: int = rorm.Field(
@@ -286,7 +286,7 @@ def add_db_crawl_task(
     result = db_engine.execute.insert(
         'crawl_browser_page',
         data,
-        return_field='id'
+        returning='id'
     )
     record_id: int = result.scalar()
 

@@ -80,14 +80,14 @@ class DatabaseORMTableDoubanMedia(rorm.Table):
     __comment__ = 'Douban media information table.'
     create_time: rorm.Datetime = rorm.Field(field_default=':create_time', not_null=True, index_n=True, comment='Record create time.')
     update_time: rorm.Datetime = rorm.Field(field_default=':update_time', index_n=True, comment='Record update time.')
-    id: int = rorm.Field(rorm.types.INTEGER, key=True, comment='Douban media ID.')
+    id: int = rorm.Field(key=True, comment='Douban media ID.')
     imdb: str = rorm.Field(rorm.types.CHAR(10), index_u=True, comment='IMDb ID.')
     type: str = rorm.Field(rorm.types.VARCHAR(5), not_null=True, comment='Media type.')
     name: str = rorm.Field(rorm.types.VARCHAR(200), not_null=True, index_n=True, comment='Media name.')
     year: str = rorm.Field(rorm.types.SMALLINT, not_null=True, comment='Media content description.')
     desc: str = rorm.Field(rorm.types.VARCHAR(1000), comment='Media content description.')
-    score: float = rorm.Field(rorm.types.FLOAT, comment='Media score, [0,10].')
-    score_count: int = rorm.Field(rorm.types.INTEGER, comment='Media score count.')
+    score: float = rorm.Field(comment='Media score, [0,10].')
+    score_count: int = rorm.Field(comment='Media score count.')
     minute: int = rorm.Field(rorm.types.SMALLINT, comment='Movie or TV drama episode minute.')
     episode: int = rorm.Field(rorm.types.SMALLINT, comment='TV drama total episode number.')
     episode_now: int = rorm.Field(rorm.types.SMALLINT, comment='TV drama current episode number.')
@@ -539,6 +539,7 @@ class FetchCrawlDouban(FetchCrawl):
             self.db_engine.execute.insert(
                 'douban_media',
                 data,
+                'id',
                 'update'
             )
 

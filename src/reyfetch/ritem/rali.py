@@ -61,17 +61,17 @@ class DatabaseORMTableAliQwen(rorm.Table):
 
     __name__ = 'ali_qwen'
     __comment__ = 'Ali API qwen model request record table.'
-    id: int = rorm.Field(rorm.types.INTEGER, key_auto=True, comment='ID.')
+    id: int = rorm.Field(key_auto=True, comment='ID.')
     request_time: rorm.Datetime = rorm.Field(not_null=True, comment='Request time.')
     response_time: rorm.Datetime = rorm.Field(not_null=True, comment='Response time, when is stream response, then is full return after time.')
     messages: str = rorm.Field(rorm.types.JSON, not_null=True, comment='Input messages data.')
     reply: str = rorm.Field(rorm.types.TEXT, not_null=True, comment='Output reply text.')
     think: str = rorm.Field(rorm.types.TEXT, comment='Output deep think text.')
     web: str = rorm.Field(rorm.types.JSON, comment='Web search data.')
-    token_total: int = rorm.Field(rorm.types.INTEGER, not_null=True, comment='Usage total Token.')
-    token_input: int = rorm.Field(rorm.types.INTEGER, not_null=True, comment='Usage input Token.')
-    token_output: int = rorm.Field(rorm.types.INTEGER, not_null=True, comment='Usage output Token.')
-    token_output_think: int = rorm.Field(rorm.types.INTEGER, comment='Usage output think Token.')
+    token_total: int = rorm.Field(not_null=True, comment='Usage total Token.')
+    token_input: int = rorm.Field(not_null=True, comment='Usage input Token.')
+    token_output: int = rorm.Field(not_null=True, comment='Usage output Token.')
+    token_output_think: int = rorm.Field(comment='Usage output think Token.')
     model: str = rorm.Field(rorm.types.VARCHAR(100), not_null=True, comment='Model name.')
 
 
