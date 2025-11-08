@@ -899,7 +899,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'total_token_output',
                         'select': (
                             'SELECT TO_CHAR(SUM("token_output"), \'FM999,999,999,999,999\')\n'
-                            'FROM `ali_qwen`'
+                            'FROM "ali_qwen"'
                         ),
                         'comment': 'Usage output total Token.'
                     },
@@ -907,7 +907,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'total_token_output_think',
                         'select': (
                             'SELECT TO_CHAR(SUM("token_output_think"), \'FM999,999,999,999,999\')\n'
-                            'FROM `ali_qwen`'
+                            'FROM "ali_qwen"'
                         ),
                         'comment': 'Usage output think total Token.'
                     },
@@ -915,7 +915,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'avg_token',
                         'select': (
                             'SELECT TO_CHAR(ROUND(AVG("token_total")), \'FM999,999,999,999,999\')\n'
-                            'FROM `ali_qwen`'
+                            'FROM "ali_qwen"'
                         ),
                         'comment': 'Usage average Token.'
                     },
@@ -923,7 +923,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'avg_token_input',
                         'select': (
                             'SELECT TO_CHAR(ROUND(AVG("token_input")), \'FM999,999,999,999,999\')\n'
-                            'FROM `ali_qwen`'
+                            'FROM "ali_qwen"'
                         ),
                         'comment': 'Usage input average Token.'
                     },
@@ -931,7 +931,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'avg_token_output',
                         'select': (
                             'SELECT TO_CHAR(ROUND(AVG("token_output")), \'FM999,999,999,999,999\')\n'
-                            'FROM `ali_qwen`'
+                            'FROM "ali_qwen"'
                         ),
                         'comment': 'Usage output average Token.'
                     },
@@ -939,15 +939,15 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'avg_token_output_think',
                         'select': (
                             'SELECT TO_CHAR(ROUND(AVG("token_output_think")), \'FM999,999,999,999,999\')\n'
-                            'FROM `ali_qwen`'
+                            'FROM "ali_qwen"'
                         ),
                         'comment': 'Usage output think average Token.'
                     },
                     {
                         'name': 'last_time',
                         'select': (
-                            'SELECT MAX(`request_time`)\n'
-                            'FROM `ali_qwen`'
+                            'SELECT MAX("request_time")\n'
+                            'FROM "ali_qwen"'
                         ),
                         'comment': 'Last record request time.'
                     }

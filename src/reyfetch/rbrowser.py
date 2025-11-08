@@ -162,8 +162,8 @@ class FetchCrawlBrowser(FetchCrawl):
         task_table = self.db_engine.execute.select(
             'crawl_browser_page',
             ['id', 'url'],
-            '`status` = 0',
-            order='`create_time` ASC'
+            '"status" = 0',
+            order='"create_time" ASC'
         )
 
         # Crawl.
@@ -326,7 +326,7 @@ def wait_db_crawl_task(
         result = db_engine.execute.select(
             'crawl_browser_page',
             ['html', 'status'],
-            '`id` = :record_id',
+            '"id" = :record_id',
             limit=1,
             record_id=record_id
         )
