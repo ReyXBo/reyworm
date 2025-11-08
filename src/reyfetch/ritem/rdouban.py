@@ -213,7 +213,7 @@ class FetchCrawlDouban(FetchCrawl):
                     {
                         'name': 'last_update_time',
                         'select': (
-                            'SELECT IFNULL(MAX("update_time"), MAX("create_time"))\n'
+                            'SELECT COALESCE(MAX("update_time"), MAX("create_time"))\n'
                             'FROM "douban_media"'
                         ),
                         'comment': 'Media last record update time.'
