@@ -347,6 +347,7 @@ class FetchCrawlDouban(FetchCrawl):
         # Database.
         if self.db_engine is not None:
             update_fields = (
+                'update_time',
                 'id',
                 'type',
                 'name',
@@ -361,7 +362,9 @@ class FetchCrawlDouban(FetchCrawl):
             self.db_engine.execute.insert(
                 'douban_media',
                 table,
-                update_fields
+                'id',
+                update_fields,
+                update_time=':NOW()'
             )
 
         return table
