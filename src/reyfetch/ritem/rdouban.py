@@ -195,12 +195,12 @@ class FetchCrawlDouban(FetchCrawl):
                         'comment': 'Media average score.'
                     },
                     {
-                        'name': 'score_count',
+                        'name': 'total_score',
                         'select': (
-                            'SELECT FORMAT(SUM("score_count"), 0)\n'
+                            'SELECT TO_CHAR(SUM("score_count"), \'FM999,999,999,999,999\')\n'
                             'FROM "douban_media"'
                         ),
-                        'comment': 'Media score count.'
+                        'comment': 'Media total score.'
                     },
                     {
                         'name': 'last_create_time',
