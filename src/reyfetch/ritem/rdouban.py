@@ -155,7 +155,7 @@ class FetchCrawlDouban(FetchCrawl):
                         'name': 'count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM "douban_media"'
+                            'FROM "douban_media"'
                         ),
                         'comment': 'Media count.'
                     },
@@ -163,7 +163,7 @@ class FetchCrawlDouban(FetchCrawl):
                         'name': 'past_day_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM "douban_media"\n'
+                            'FROM "douban_media"\n'
                             'WHERE DATE_PART(\'day\', NOW() - "create_time") = 0'
                         ),
                         'comment': 'Media count in the past day.'
@@ -172,7 +172,7 @@ class FetchCrawlDouban(FetchCrawl):
                         'name': 'past_week_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM "douban_media"\n'
+                            'FROM "douban_media"\n'
                             'WHERE DATE_PART(\'day\', NOW() - "create_time") <= 6'
                         ),
                         'comment': 'Media count in the past week.'
@@ -181,7 +181,7 @@ class FetchCrawlDouban(FetchCrawl):
                         'name': 'past_month_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM "douban_media"\n'
+                            'FROM "douban_media"\n'
                             'WHERE DATE_PART(\'day\', NOW() - "create_time") <= 29'
                         ),
                         'comment': 'Media count in the past month.'
@@ -190,7 +190,7 @@ class FetchCrawlDouban(FetchCrawl):
                         'name': 'avg_score',
                         'select': (
                             'SELECT ROUND(AVG("score"), 1)\n'
-                            f'FROM "douban_media"'
+                            'FROM "douban_media"'
                         ),
                         'comment': 'Media average score.'
                     },
@@ -198,7 +198,7 @@ class FetchCrawlDouban(FetchCrawl):
                         'name': 'score_count',
                         'select': (
                             'SELECT FORMAT(SUM("score_count"), 0)\n'
-                            f'FROM "douban_media"'
+                            'FROM "douban_media"'
                         ),
                         'comment': 'Media score count.'
                     },
@@ -206,7 +206,7 @@ class FetchCrawlDouban(FetchCrawl):
                         'name': 'last_create_time',
                         'select': (
                             'SELECT MAX("create_time")\n'
-                            f'FROM "douban_media"'
+                            'FROM "douban_media"'
                         ),
                         'comment': 'Media last record create time.'
                     },
@@ -214,7 +214,7 @@ class FetchCrawlDouban(FetchCrawl):
                         'name': 'last_update_time',
                         'select': (
                             'SELECT IFNULL(MAX("update_time"), MAX("create_time"))\n'
-                            f'FROM "douban_media"'
+                            'FROM "douban_media"'
                         ),
                         'comment': 'Media last record update time.'
                     }

@@ -848,7 +848,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM "ali_qwen"'
+                            'FROM "ali_qwen"'
                         ),
                         'comment': 'Request count.'
                     },
@@ -856,7 +856,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'past_day_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM "ali_qwen"'
+                            'FROM "ali_qwen"'
                             'WHERE DATE_PART(\'day\', NOW() - "request_time") = 0'
                         ),
                         'comment': 'Request count in the past day.'
@@ -865,7 +865,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'past_week_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM "ali_qwen"'
+                            'FROM "ali_qwen"'
                             'WHERE DATE_PART(\'day\', NOW() - "request_time") <= 6'
                         ),
                         'comment': 'Request count in the past week.'
@@ -874,7 +874,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'past_month_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM "ali_qwen"'
+                            'FROM "ali_qwen"'
                             'WHERE DATE_PART(\'day\', NOW() - "request_time") <= 29'
                         ),
                         'comment': 'Request count in the past month.'
@@ -883,7 +883,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'total_token',
                         'select': (
                             'SELECT FORMAT(SUM("token_total"), 0)\n'
-                            f'FROM "ali_qwen"'
+                            'FROM "ali_qwen"'
                         ),
                         'comment': 'Usage total Token.'
                     },
@@ -891,7 +891,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'total_token_input',
                         'select': (
                             'SELECT FORMAT(SUM("token_input"), 0)\n'
-                            f'FROM "ali_qwen"'
+                            'FROM "ali_qwen"'
                         ),
                         'comment': 'Usage input total Token.'
                     },
@@ -899,7 +899,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'total_token_output',
                         'select': (
                             'SELECT FORMAT(SUM("token_output"), 0)\n'
-                            f'FROM `ali_qwen`'
+                            'FROM `ali_qwen`'
                         ),
                         'comment': 'Usage output total Token.'
                     },
@@ -907,7 +907,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'total_token_output_think',
                         'select': (
                             'SELECT FORMAT(SUM(`token_output_think`), 0)\n'
-                            f'FROM `ali_qwen`'
+                            'FROM `ali_qwen`'
                         ),
                         'comment': 'Usage output think total Token.'
                     },
@@ -915,7 +915,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'avg_token',
                         'select': (
                             'SELECT FORMAT(AVG(`token_total`), 0)\n'
-                            f'FROM `ali_qwen`'
+                            'FROM `ali_qwen`'
                         ),
                         'comment': 'Usage average Token.'
                     },
@@ -923,7 +923,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'avg_token_input',
                         'select': (
                             'SELECT FORMAT(AVG(`token_input`), 0)\n'
-                            f'FROM `ali_qwen`'
+                            'FROM `ali_qwen`'
                         ),
                         'comment': 'Usage input average Token.'
                     },
@@ -931,7 +931,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'avg_token_output',
                         'select': (
                             'SELECT FORMAT(AVG(`token_output`), 0)\n'
-                            f'FROM `ali_qwen`'
+                            'FROM `ali_qwen`'
                         ),
                         'comment': 'Usage output average Token.'
                     },
@@ -939,7 +939,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'avg_token_output_think',
                         'select': (
                             'SELECT FORMAT(AVG(`token_output_think`), 0)\n'
-                            f'FROM `ali_qwen`'
+                            'FROM `ali_qwen`'
                         ),
                         'comment': 'Usage output think average Token.'
                     },
@@ -947,7 +947,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                         'name': 'last_time',
                         'select': (
                             'SELECT MAX(`request_time`)\n'
-                            f'FROM `ali_qwen`'
+                            'FROM `ali_qwen`'
                         ),
                         'comment': 'Last record request time.'
                     }

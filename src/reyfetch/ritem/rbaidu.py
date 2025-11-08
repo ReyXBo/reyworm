@@ -345,7 +345,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                         'name': 'count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM "baidu_trans"'
+                            'FROM "baidu_trans"'
                         ),
                         'comment': 'Request count.'
                     },
@@ -353,7 +353,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                         'name': 'past_day_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM "baidu_trans"'
+                            'FROM "baidu_trans"'
                             'WHERE DATE_PART(\'day\', NOW() - "request_time") = 0'
                         ),
                         'comment': 'Request count in the past day.'
@@ -362,7 +362,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                         'name': 'past_week_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM "baidu_trans"'
+                            'FROM "baidu_trans"'
                             'WHERE DATE_PART(\'day\', NOW() - "request_time") <= 6'
                         ),
                         'comment': 'Request count in the past week.'
@@ -371,7 +371,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                         'name': 'past_month_count',
                         'select': (
                             'SELECT COUNT(1)\n'
-                            f'FROM "baidu_trans"'
+                            'FROM "baidu_trans"'
                             'WHERE DATE_PART(\'day\', NOW() - "request_time") <= 29'
                         ),
                         'comment': 'Request count in the past month.'
@@ -380,7 +380,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                         'name': 'total_input',
                         'select': (
                             'SELECT FORMAT(SUM(LENGTH("input")), 0)\n'
-                            f'FROM "baidu_trans"'
+                            'FROM "baidu_trans"'
                         ),
                         'comment': 'Input original text total character.'
                     },
@@ -388,7 +388,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                         'name': 'total_output',
                         'select': (
                             'SELECT FORMAT(SUM(LENGTH("output")), 0)\n'
-                            f'FROM "baidu_trans"'
+                            'FROM "baidu_trans"'
                         ),
                         'comment': 'Output translation text total character.'
                     },
@@ -396,7 +396,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                         'name': 'avg_input',
                         'select': (
                             'SELECT FORMAT(AVG(LENGTH("input")), 0)\n'
-                            f'FROM "baidu_trans"'
+                            'FROM "baidu_trans"'
                         ),
                         'comment': 'Input original text average character.'
                     },
@@ -404,7 +404,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                         'name': 'avg_output',
                         'select': (
                             'SELECT FORMAT(AVG(LENGTH("output")), 0)\n'
-                            f'FROM "baidu_trans"'
+                            'FROM "baidu_trans"'
                         ),
                         'comment': 'Output translation text average character.'
                     },
@@ -412,7 +412,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                         'name': 'last_time',
                         'select': (
                             'SELECT MAX("request_time")\n'
-                            f'FROM "baidu_trans"'
+                            'FROM "baidu_trans"'
                         ),
                         'comment': 'Last record request time.'
                     }
