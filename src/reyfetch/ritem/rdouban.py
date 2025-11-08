@@ -189,7 +189,7 @@ class FetchCrawlDouban(FetchCrawl):
                     {
                         'name': 'avg_score',
                         'select': (
-                            'SELECT ROUND(AVG("score"), 1)\n'
+                            'SELECT ROUND(AVG("score")::NUMERIC, 1)\n'
                             'FROM "douban_media"'
                         ),
                         'comment': 'Media average score.'

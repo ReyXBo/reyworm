@@ -914,7 +914,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                     {
                         'name': 'avg_token',
                         'select': (
-                            'SELECT TO_CHAR(ROUND(AVG("token_total"), 0), \'FM999,999,999,999,999\')\n'
+                            'SELECT TO_CHAR(ROUND(AVG("token_total")), \'FM999,999,999,999,999\')\n'
                             'FROM `ali_qwen`'
                         ),
                         'comment': 'Usage average Token.'
@@ -922,7 +922,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                     {
                         'name': 'avg_token_input',
                         'select': (
-                            'SELECT TO_CHAR(ROUND(AVG("token_input"), 0), \'FM999,999,999,999,999\')\n'
+                            'SELECT TO_CHAR(ROUND(AVG("token_input")), \'FM999,999,999,999,999\')\n'
                             'FROM `ali_qwen`'
                         ),
                         'comment': 'Usage input average Token.'
@@ -930,7 +930,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                     {
                         'name': 'avg_token_output',
                         'select': (
-                            'SELECT TO_CHAR(ROUND(AVG("token_output"), 0), \'FM999,999,999,999,999\')\n'
+                            'SELECT TO_CHAR(ROUND(AVG("token_output")), \'FM999,999,999,999,999\')\n'
                             'FROM `ali_qwen`'
                         ),
                         'comment': 'Usage output average Token.'
@@ -938,7 +938,7 @@ class FetchRequestAliQwen(FetchRequestAli, FetchRequestWithDatabase):
                     {
                         'name': 'avg_token_output_think',
                         'select': (
-                            'SELECT TO_CHAR(ROUND(AVG("token_output_think"), 0), \'FM999,999,999,999,999\')\n'
+                            'SELECT TO_CHAR(ROUND(AVG("token_output_think")), \'FM999,999,999,999,999\')\n'
                             'FROM `ali_qwen`'
                         ),
                         'comment': 'Usage output think average Token.'

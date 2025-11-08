@@ -395,7 +395,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                     {
                         'name': 'avg_input',
                         'select': (
-                            'SELECT TO_CHAR(ROUND(AVG(LENGTH("input")), 0), \'FM999,999,999,999,999\')\n'
+                            'SELECT TO_CHAR(ROUND(AVG(LENGTH("input"))), \'FM999,999,999,999,999\')\n'
                             'FROM "baidu_trans"'
                         ),
                         'comment': 'Input original text average character.'
@@ -403,7 +403,7 @@ class FetchRequestBaiduTranslate(FetchRequestBaidu, FetchRequestWithDatabase):
                     {
                         'name': 'avg_output',
                         'select': (
-                            'SELECT TO_CHAR(ROUND(AVG(LENGTH("output")), 0), \'FM999,999,999,999,999\')\n'
+                            'SELECT TO_CHAR(ROUND(AVG(LENGTH("output"))), \'FM999,999,999,999,999\')\n'
                             'FROM "baidu_trans"'
                         ),
                         'comment': 'Output translation text average character.'

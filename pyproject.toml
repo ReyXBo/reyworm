@@ -1,6 +1,6 @@
 [project]
 name = "reyfetch"
-version = "1.0.57"
+version = "1.0.58"
 description = "Web data fetch method set."
 readme = "README.md"
 requires-python = ">=3.12"
