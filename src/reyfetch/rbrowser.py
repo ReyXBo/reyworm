@@ -179,8 +179,8 @@ class FetchCrawlBrowser(FetchCrawl):
 
             ## Database.
             data = {
-                'update_time': ':NOW()',
                 'id': id_,
+                'update_time': ':NOW()',
                 'html': self.page,
                 'status': status
             }
