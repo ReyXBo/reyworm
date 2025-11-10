@@ -391,7 +391,7 @@ class FetchCrawlDouban(FetchCrawl):
         response = request(
             url,
             headers=headers,
-            check=True
+            check=200
         )
 
         # Extract.
